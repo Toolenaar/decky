@@ -8,6 +8,7 @@ import 'related_cards.dart';
 import 'rulings.dart';
 import 'leadership_skills.dart';
 import 'source_products.dart';
+import 'firebase_image_uris.dart';
 
 class MtgCard extends BaseModel {
   final String? artist;
@@ -94,6 +95,10 @@ class MtgCard extends BaseModel {
   final List<String> types;
   final List<String>? variations;
   final String? watermark;
+  final FirebaseImageUris? firebaseImageUris;
+  final String? imageDataStatus;
+  final Map<String, dynamic>? scryfallData;
+  final String? importError;
 
   MtgCard({
     required super.id, // This will be the UUID
@@ -181,6 +186,10 @@ class MtgCard extends BaseModel {
     required this.types,
     this.variations,
     this.watermark,
+    this.firebaseImageUris,
+    this.imageDataStatus,
+    this.scryfallData,
+    this.importError,
   });
 
   @override
@@ -274,6 +283,10 @@ class MtgCard extends BaseModel {
       'types': types,
       if (variations != null) 'variations': variations,
       if (watermark != null) 'watermark': watermark,
+      if (firebaseImageUris != null) 'firebaseImageUris': firebaseImageUris?.toJson(),
+      if (imageDataStatus != null) 'imageDataStatus': imageDataStatus,
+      if (scryfallData != null) 'scryfallData': scryfallData,
+      if (importError != null) 'importError': importError,
     };
   }
 
@@ -374,6 +387,14 @@ class MtgCard extends BaseModel {
       types: List<String>.from(json['types'] ?? []),
       variations: json['variations'] != null ? List<String>.from(json['variations']) : null,
       watermark: json['watermark'],
+      firebaseImageUris: json['firebaseImageUris'] != null 
+          ? FirebaseImageUris.fromJson(Map<String, dynamic>.from(json['firebaseImageUris'] as Map))
+          : null,
+      imageDataStatus: json['imageDataStatus'],
+      scryfallData: json['scryfallData'] != null 
+          ? Map<String, dynamic>.from(json['scryfallData'] as Map)
+          : null,
+      importError: json['importError'],
     );
   }
 }

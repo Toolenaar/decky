@@ -6,17 +6,17 @@ enum LoginState { loggedOut, loggedIn, loggingOff }
 class UserController {
   final _auth = FirebaseAuth.instance;
   // BehaviorSubject<Account?> accountSink = BehaviorSubject.seeded(null);
-  final BehaviorSubject<LoginState?> loggedinSink = BehaviorSubject.seeded(null);
+  final BehaviorSubject<LoginState> loggedinSink = BehaviorSubject.seeded(LoginState.loggedOut);
 
   User? loggedInUser;
 
   // Auth state streams
   Stream<User?> get authStateChanges => _auth.authStateChanges();
-  Stream<LoginState?> get loginStateStream => loggedinSink.stream;
+  Stream<LoginState> get loginStateStream => loggedinSink.stream;
   
   // Current state getters
   User? get currentUser => _auth.currentUser;
-  LoginState? get currentLoginState => loggedinSink.value;
+  LoginState get currentLoginState => loggedinSink.value;
 
   Future init() async {
     await Future.delayed(const Duration(milliseconds: 2000)); //show splash screen

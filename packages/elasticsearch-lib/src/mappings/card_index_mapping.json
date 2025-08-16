@@ -1,0 +1,439 @@
+{
+  "settings": {
+    "number_of_shards": 2,
+    "number_of_replicas": 1,
+    "analysis": {
+      "char_filter": {
+        "mana_symbol_normalizer": {
+          "type": "pattern_replace",
+          "pattern": "\\{([WUBRGCXP0-9]+)\\}",
+          "replacement": "$1"
+        }
+      },
+      "tokenizer": {
+        "edge_ngram_tokenizer": {
+          "type": "edge_ngram",
+          "min_gram": 2,
+          "max_gram": 20,
+          "token_chars": ["letter", "digit"]
+        }
+      },
+      "filter": {
+        "english_stop": {
+          "type": "stop",
+          "stopwords": "_english_"
+        },
+        "english_stemmer": {
+          "type": "stemmer",
+          "language": "english"
+        },
+        "card_synonym": {
+          "type": "synonym",
+          "synonyms": [
+            "destroy, removal",
+            "counter, counterspell",
+            "draw, card draw",
+            "ramp, mana acceleration",
+            "tutor, search",
+            "mill, library destruction",
+            "burn, direct damage",
+            "lifegain, life gain",
+            "token, creature token"
+          ]
+        }
+      },
+      "analyzer": {
+        "card_name_analyzer": {
+          "type": "custom",
+          "tokenizer": "standard",
+          "filter": ["lowercase", "asciifolding"]
+        },
+        "card_name_search": {
+          "type": "custom",
+          "tokenizer": "edge_ngram_tokenizer",
+          "filter": ["lowercase", "asciifolding"]
+        },
+        "card_text_analyzer": {
+          "type": "custom",
+          "tokenizer": "standard",
+          "char_filter": ["mana_symbol_normalizer"],
+          "filter": ["lowercase", "english_stop", "english_stemmer", "card_synonym"]
+        },
+        "mana_cost_analyzer": {
+          "type": "custom",
+          "tokenizer": "keyword",
+          "char_filter": ["mana_symbol_normalizer"],
+          "filter": ["lowercase"]
+        }
+      }
+    }
+  },
+  "mappings": {
+    "properties": {
+      "uuid": {
+        "type": "keyword"
+      },
+      "firestore_id": {
+        "type": "keyword"
+      },
+      "name": {
+        "type": "text",
+        "analyzer": "card_name_analyzer",
+        "search_analyzer": "card_name_analyzer",
+        "fields": {
+          "keyword": {
+            "type": "keyword"
+          },
+          "suggest": {
+            "type": "text",
+            "analyzer": "card_name_search"
+          }
+        }
+      },
+      "ascii_name": {
+        "type": "keyword"
+      },
+      "mana_cost": {
+        "type": "text",
+        "analyzer": "mana_cost_analyzer",
+        "fields": {
+          "raw": {
+            "type": "keyword"
+          }
+        }
+      },
+      "mana_value": {
+        "type": "float"
+      },
+      "converted_mana_cost": {
+        "type": "float"
+      },
+      "colors": {
+        "type": "keyword"
+      },
+      "color_identity": {
+        "type": "keyword"
+      },
+      "color_indicator": {
+        "type": "keyword"
+      },
+      "type_line": {
+        "type": "text",
+        "analyzer": "standard",
+        "fields": {
+          "keyword": {
+            "type": "keyword"
+          }
+        }
+      },
+      "types": {
+        "type": "keyword"
+      },
+      "subtypes": {
+        "type": "keyword"
+      },
+      "supertypes": {
+        "type": "keyword"
+      },
+      "oracle_text": {
+        "type": "text",
+        "analyzer": "card_text_analyzer",
+        "fields": {
+          "raw": {
+            "type": "text"
+          }
+        }
+      },
+      "keywords": {
+        "type": "keyword"
+      },
+      "power": {
+        "type": "keyword",
+        "fields": {
+          "numeric": {
+            "type": "float",
+            "ignore_malformed": true
+          }
+        }
+      },
+      "toughness": {
+        "type": "keyword",
+        "fields": {
+          "numeric": {
+            "type": "float",
+            "ignore_malformed": true
+          }
+        }
+      },
+      "loyalty": {
+        "type": "keyword",
+        "fields": {
+          "numeric": {
+            "type": "float",
+            "ignore_malformed": true
+          }
+        }
+      },
+      "defense": {
+        "type": "keyword",
+        "fields": {
+          "numeric": {
+            "type": "float",
+            "ignore_malformed": true
+          }
+        }
+      },
+      "rarity": {
+        "type": "keyword"
+      },
+      "set_code": {
+        "type": "keyword"
+      },
+      "set_name": {
+        "type": "text",
+        "fields": {
+          "keyword": {
+            "type": "keyword"
+          }
+        }
+      },
+      "collector_number": {
+        "type": "keyword"
+      },
+      "legalities": {
+        "type": "object",
+        "properties": {
+          "standard": { "type": "keyword" },
+          "modern": { "type": "keyword" },
+          "legacy": { "type": "keyword" },
+          "vintage": { "type": "keyword" },
+          "commander": { "type": "keyword" },
+          "pioneer": { "type": "keyword" },
+          "historic": { "type": "keyword" },
+          "explorer": { "type": "keyword" },
+          "alchemy": { "type": "keyword" },
+          "brawl": { "type": "keyword" },
+          "pauper": { "type": "keyword" },
+          "penny": { "type": "keyword" },
+          "duel": { "type": "keyword" },
+          "oldschool": { "type": "keyword" },
+          "premodern": { "type": "keyword" },
+          "predh": { "type": "keyword" },
+          "oathbreaker": { "type": "keyword" },
+          "paupercommander": { "type": "keyword" },
+          "gladiator": { "type": "keyword" },
+          "timeless": { "type": "keyword" },
+          "standardbrawl": { "type": "keyword" },
+          "historicbrawl": { "type": "keyword" },
+          "future": { "type": "keyword" }
+        }
+      },
+      "prices": {
+        "type": "object",
+        "properties": {
+          "usd": { "type": "float" },
+          "usd_foil": { "type": "float" },
+          "eur": { "type": "float" },
+          "eur_foil": { "type": "float" },
+          "tix": { "type": "float" }
+        }
+      },
+      "edhrec_rank": {
+        "type": "integer"
+      },
+      "edhrec_saltiness": {
+        "type": "float"
+      },
+      "layout": {
+        "type": "keyword"
+      },
+      "is_reserved": {
+        "type": "boolean"
+      },
+      "is_full_art": {
+        "type": "boolean"
+      },
+      "is_promo": {
+        "type": "boolean"
+      },
+      "is_reprint": {
+        "type": "boolean"
+      },
+      "release_date": {
+        "type": "date",
+        "format": "yyyy-MM-dd"
+      },
+      "artist": {
+        "type": "text",
+        "fields": {
+          "keyword": {
+            "type": "keyword"
+          }
+        }
+      },
+      "flavor_text": {
+        "type": "text"
+      },
+      "image_uris": {
+        "type": "object",
+        "properties": {
+          "small": { "type": "keyword" },
+          "normal": { "type": "keyword" },
+          "large": { "type": "keyword" },
+          "png": { "type": "keyword" },
+          "art_crop": { "type": "keyword" },
+          "border_crop": { "type": "keyword" }
+        }
+      },
+      "preview_image": {
+        "type": "keyword"
+      },
+      "scryfall_id": {
+        "type": "keyword"
+      },
+      "scryfall_oracle_id": {
+        "type": "keyword"
+      },
+      "scryfall_illustration_id": {
+        "type": "keyword"
+      },
+      "identifiers": {
+        "type": "object",
+        "properties": {
+          "mtgo_id": { "type": "keyword" },
+          "arena_id": { "type": "keyword" },
+          "tcgplayer_id": { "type": "keyword" },
+          "cardmarket_id": { "type": "keyword" },
+          "multiverse_id": { "type": "keyword" }
+        }
+      },
+      "purchase_urls": {
+        "type": "object",
+        "properties": {
+          "tcgplayer": { "type": "keyword" },
+          "cardmarket": { "type": "keyword" },
+          "cardkingdom": { "type": "keyword" }
+        }
+      },
+      "border_color": {
+        "type": "keyword"
+      },
+      "frame_version": {
+        "type": "keyword"
+      },
+      "frame_effects": {
+        "type": "keyword"
+      },
+      "finishes": {
+        "type": "keyword"
+      },
+      "has_foil": {
+        "type": "boolean"
+      },
+      "has_non_foil": {
+        "type": "boolean"
+      },
+      "is_alternative": {
+        "type": "boolean"
+      },
+      "is_textless": {
+        "type": "boolean"
+      },
+      "is_oversized": {
+        "type": "boolean"
+      },
+      "is_funny": {
+        "type": "boolean"
+      },
+      "artist_ids": {
+        "type": "keyword"
+      },
+      "other_face_ids": {
+        "type": "keyword"
+      },
+      "variations": {
+        "type": "keyword"
+      },
+      "language": {
+        "type": "keyword"
+      },
+      "original_release_date": {
+        "type": "date",
+        "format": "yyyy-MM-dd"
+      },
+      "rulings_count": {
+        "type": "integer"
+      },
+      "produced_mana": {
+        "type": "keyword"
+      },
+      "card_faces": {
+        "type": "nested",
+        "properties": {
+          "name": { "type": "text" },
+          "mana_cost": { "type": "keyword" },
+          "type_line": { "type": "text" },
+          "oracle_text": { "type": "text" },
+          "power": { "type": "keyword" },
+          "toughness": { "type": "keyword" },
+          "loyalty": { "type": "keyword" },
+          "defense": { "type": "keyword" }
+        }
+      },
+      "synergy_themes": {
+        "type": "keyword"
+      },
+      "deck_archetypes": {
+        "type": "keyword"
+      },
+      "combo_potential": {
+        "type": "float"
+      },
+      "popularity_score": {
+        "type": "float"
+      },
+      "ai_embeddings": {
+        "type": "dense_vector",
+        "dims": 768,
+        "index": true,
+        "similarity": "cosine"
+      },
+      "related_cards": {
+        "type": "keyword"
+      },
+      "tribal_types": {
+        "type": "keyword"
+      },
+      "mechanic_categories": {
+        "type": "keyword"
+      },
+      "color_weight": {
+        "type": "object",
+        "properties": {
+          "white": { "type": "float" },
+          "blue": { "type": "float" },
+          "black": { "type": "float" },
+          "red": { "type": "float" },
+          "green": { "type": "float" },
+          "colorless": { "type": "float" }
+        }
+      },
+      "format_playability": {
+        "type": "object",
+        "properties": {
+          "standard": { "type": "float" },
+          "modern": { "type": "float" },
+          "legacy": { "type": "float" },
+          "vintage": { "type": "float" },
+          "commander": { "type": "float" },
+          "pioneer": { "type": "float" },
+          "pauper": { "type": "float" }
+        }
+      },
+      "suggest": {
+        "type": "completion",
+        "analyzer": "simple"
+      }
+    }
+  }
+}
