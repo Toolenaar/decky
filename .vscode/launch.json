@@ -1,0 +1,17 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Decky Admin (Development)",
+            "request": "launch",
+            "type": "dart",
+            "program": "packages/decky_admin/lib/main.dart",
+            "args": [
+                "--dart-define=ENVIRONMENT=dev"
+            ],
+            "env": {
+                "ENVIRONMENT": "dev"
+            } 
+        },
+    ]
+}

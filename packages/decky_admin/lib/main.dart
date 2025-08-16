@@ -1,0 +1,38 @@
+import 'package:flutter/material.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:get_it/get_it.dart';
+import 'package:decky_core/controller/user_controller.dart';
+import 'package:decky_admin/router/app_router.dart';
+import 'firebase_options.dart';
+
+final getIt = GetIt.instance;
+
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+
+  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+  
+  // Setup dependency injection
+  getIt.registerSingleton<UserController>(UserController());
+  
+  // Initialize UserController
+  await getIt<UserController>().init();
+  
+  runApp(const MainApp());
+}
+
+class MainApp extends StatelessWidget {
+  const MainApp({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp.router(
+      title: 'Decky Admin',
+      theme: ThemeData(
+        colorScheme: ColorScheme.fromSeed(seedColor: Colors.blue),
+        useMaterial3: true,
+      ),
+      routerConfig: AppRouter.router,
+    );
+  }
+}
