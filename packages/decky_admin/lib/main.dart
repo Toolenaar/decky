@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:get_it/get_it.dart';
+import 'package:provider/provider.dart';
 import 'package:decky_core/controller/user_controller.dart';
+import 'package:decky_core/providers/theme_provider.dart';
 import 'package:decky_admin/router/app_router.dart';
 import 'package:decky_admin/services/service_locator.dart';
 import 'firebase_options.dart';
@@ -25,7 +27,12 @@ void main() async {
   // Initialize AuthStateNotifier after services are ready
   AppRouter.initializeAuthNotifier();
   
-  runApp(const MainApp());
+  runApp(
+    ChangeNotifierProvider(
+      create: (_) => ThemeProvider(),
+      child: const MainApp(),
+    ),
+  );
 }
 
 class MainApp extends StatelessWidget {
@@ -33,12 +40,13 @@ class MainApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final themeProvider = Provider.of<ThemeProvider>(context);
+    
     return MaterialApp.router(
       title: 'Decky Admin',
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.blue),
-        useMaterial3: true,
-      ),
+      theme: themeProvider.lightTheme,
+      darkTheme: themeProvider.darkTheme,
+      themeMode: themeProvider.themeMode,
       routerConfig: AppRouter.router,
     );
   }

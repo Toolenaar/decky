@@ -1,3 +1,5 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:decky_core/model/account.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:rxdart/subjects.dart';
 
@@ -9,11 +11,13 @@ class UserController {
   final BehaviorSubject<LoginState> loggedinSink = BehaviorSubject.seeded(LoginState.loggedOut);
 
   User? loggedInUser;
-
+  //Account
+  final BehaviorSubject<Account?> accountSink = BehaviorSubject.seeded(null);
+  Account? get account => accountSink.value;
   // Auth state streams
   Stream<User?> get authStateChanges => _auth.authStateChanges();
   Stream<LoginState> get loginStateStream => loggedinSink.stream;
-  
+
   // Current state getters
   User? get currentUser => _auth.currentUser;
   LoginState get currentLoginState => loggedinSink.value;
@@ -24,7 +28,7 @@ class UserController {
     _auth.authStateChanges().listen((event) async {
       loggedInUser = event;
       if (loggedInUser != null) {
-        // await _fetchUserAfterLogin();
+        await _fetchUserAfterLogin();
         loggedinSink.add(LoginState.loggedIn);
       } else {
         loggedinSink.add(LoginState.loggedOut);
@@ -32,16 +36,21 @@ class UserController {
     });
   }
 
+  Future<void> _fetchUserAfterLogin() async {
+    final account = await Account.getAccount(loggedInUser!.uid);
+    if (account == null) {
+      //create account
+      await signOut();
+
+      return;
+    }
+    accountSink.add(account);
+  }
+
   // Sign in with email and password
-  Future<UserCredential> signInWithEmailAndPassword({
-    required String email,
-    required String password,
-  }) async {
+  Future<UserCredential> signInWithEmailAndPassword({required String email, required String password}) async {
     try {
-      final credential = await _auth.signInWithEmailAndPassword(
-        email: email,
-        password: password,
-      );
+      final credential = await _auth.signInWithEmailAndPassword(email: email, password: password);
       return credential;
     } on FirebaseAuthException {
       rethrow;
@@ -52,7 +61,8 @@ class UserController {
         // Try signing in without persistence (session only)
         throw FirebaseAuthException(
           code: 'keychain-error',
-          message: 'Keychain access error. Please check your macOS keychain settings or run the app with: flutter run -d macos --dart-define=FIREBASE_AUTH_PERSIST=false',
+          message:
+              'Keychain access error. Please check your macOS keychain settings or run the app with: flutter run -d macos --dart-define=FIREBASE_AUTH_PERSIST=false',
         );
       }
       throw Exception('Authentication failed: $e');
@@ -74,15 +84,9 @@ class UserController {
   }
 
   // Create user with email and password (for future use)
-  Future<UserCredential> createUserWithEmailAndPassword({
-    required String email,
-    required String password,
-  }) async {
+  Future<UserCredential> createUserWithEmailAndPassword({required String email, required String password}) async {
     try {
-      final credential = await _auth.createUserWithEmailAndPassword(
-        email: email,
-        password: password,
-      );
+      final credential = await _auth.createUserWithEmailAndPassword(email: email, password: password);
       return credential;
     } on FirebaseAuthException {
       rethrow;

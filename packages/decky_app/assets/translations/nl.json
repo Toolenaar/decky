@@ -1,0 +1,156 @@
+{
+  "app": {
+    "title": "Decky",
+    "welcome": "Welkom bij Decky!"
+  },
+  "auth": {
+    "email": "E-mail",
+    "password": "Wachtwoord",
+    "confirm_password": "Bevestig Wachtwoord",
+    "sign_in": "Aanmelden",
+    "sign_up": "Registreren",
+    "create_account": "Account Aanmaken",
+    "sign_in_subtitle": "Meld aan om door te gaan",
+    "sign_up_subtitle": "Maak je account aan",
+    "forgot_password": "Wachtwoord Vergeten?",
+    "dont_have_account": "Nog geen account?",
+    "already_have_account": "Al een account?",
+    "email_placeholder": "jouw@email.com",
+    "errors": {
+      "enter_email": "Voer je e-mailadres in",
+      "enter_password": "Voer je wachtwoord in",
+      "confirm_password": "Bevestig je wachtwoord",
+      "passwords_no_match": "Wachtwoorden komen niet overeen",
+      "valid_email": "Voer een geldig e-mailadres in",
+      "password_length": "Wachtwoord moet minstens 6 tekens bevatten",
+      "user_not_found": "Geen gebruiker gevonden met dit e-mailadres.",
+      "wrong_password": "Onjuist wachtwoord.",
+      "email_already_in_use": "Dit e-mailadres is al geregistreerd.",
+      "invalid_email": "Ongeldig e-mailadres.",
+      "weak_password": "Wachtwoord moet minstens 6 tekens bevatten.",
+      "user_disabled": "Dit account is uitgeschakeld.",
+      "too_many_requests": "Te veel pogingen. Probeer het later opnieuw.",
+      "keychain_error": "Sleutelhanger toegangsfout. Controleer je macOS sleutelhanger instellingen.",
+      "auth_failed": "Authenticatie mislukt. Probeer het opnieuw.",
+      "unexpected_error": "Er is een onverwachte fout opgetreden. Probeer het opnieuw.",
+      "reset_failed": "Versturen van reset e-mail mislukt. Probeer het opnieuw.",
+      "enter_email_first": "Voer eerst je e-mailadres in",
+      "enter_valid_email": "Voer een geldig e-mailadres in"
+    },
+    "password_reset_sent": "Wachtwoord reset e-mail verzonden naar {email}",
+    "logout": "Uitloggen",
+    "confirm_logout": "Uitloggen Bevestigen",
+    "confirm_logout_message": "Weet je zeker dat je wilt uitloggen?",
+    "cancel": "Annuleren",
+    "logout_failed": "Uitloggen mislukt: {error}"
+  },
+  "navigation": {
+    "decks": "Decks",
+    "find_cards": "Kaarten Zoeken",
+    "collection": "Collectie",
+    "profile": "Profiel"
+  },
+  "dashboard": {
+    "title": "Decky Dashboard",
+    "unknown_user": "Onbekende Gebruiker",
+    "my_decks": "Mijn Decks",
+    "my_decks_subtitle": "Bekijk en beheer je deck collectie",
+    "card_search": "Kaarten Zoeken",
+    "card_search_subtitle": "Vind kaarten voor je decks",
+    "ai_deck_builder": "AI Deck Builder",
+    "ai_deck_builder_subtitle": "Krijg AI-gestuurde deck suggesties",
+    "coming_soon": {
+      "decks": "Decks functie komt binnenkort!",
+      "card_search": "Kaarten zoeken functie komt binnenkort!",
+      "ai_builder": "AI builder functie komt binnenkort!"
+    }
+  },
+  "search": {
+    "title": "Kaarten Zoeken",
+    "hint": "Zoek naar Magic kaarten...",
+    "empty_state": {
+      "title": "Zoek naar Magic kaarten",
+      "subtitle": "Voer een kaartnaam, type in of gebruik filters om kaarten te vinden"
+    },
+    "no_results": {
+      "title": "Geen kaarten gevonden",
+      "subtitle": "Probeer je zoekopdracht of filters aan te passen",
+      "clear_filters": "Filters Wissen"
+    },
+    "error": {
+      "title": "Fout: {message}",
+      "retry": "Opnieuw Proberen"
+    },
+    "loading_more": "Meer kaarten laden...",
+    "sort": {
+      "name_asc": "Naam (A-Z)",
+      "name_desc": "Naam (Z-A)",
+      "mana_value_asc": "Mana Waarde (Laag naar Hoog)",
+      "mana_value_desc": "Mana Waarde (Hoog naar Laag)",
+      "relevance": "Relevantie"
+    },
+    "filters": {
+      "clear_all": "Alles Wissen"
+    },
+    "card_tapped": "Getikt op {cardName}"
+  },
+  "profile": {
+    "title": "Profiel",
+    "user_name": "Gebruikersnaam",
+    "user_email": "gebruiker@voorbeeld.com",
+    "stats": {
+      "total_decks": "Totaal Decks",
+      "cards_in_collection": "Kaarten in Collectie"
+    },
+    "actions": {
+      "edit_profile": "Profiel Bewerken",
+      "notifications": "Meldingen",
+      "help_support": "Hulp & Ondersteuning",
+      "sign_out": "Uitloggen"
+    }
+  },
+  "collection": {
+    "title": "Mijn Collectie",
+    "empty_state": {
+      "title": "Je kaarten collectie",
+      "subtitle": "Scan kaarten om ze toe te voegen"
+    },
+    "scan_cards": "Kaarten Scannen"
+  },
+  "decks": {
+    "title": "Mijn Decks",
+    "empty_state": {
+      "title": "Je deck collectie"
+    }
+  },
+  "cards": {
+    "mana_cost": "Mana Kosten: {cost}",
+    "no_image": "Geen afbeelding beschikbaar",
+    "image_not_available": "Afbeelding niet beschikbaar",
+    "rarity": {
+      "common": "gewoon",
+      "uncommon": "ongewoon",
+      "rare": "zeldzaam",
+      "mythic": "mythisch"
+    }
+  },
+  "common": {
+    "user": "Gebruiker",
+    "loading": "Laden...",
+    "error": "Fout",
+    "retry": "Opnieuw",
+    "cancel": "Annuleren",
+    "confirm": "Bevestigen",
+    "save": "Opslaan",
+    "delete": "Verwijderen",
+    "edit": "Bewerken",
+    "close": "Sluiten",
+    "back": "Terug",
+    "next": "Volgende",
+    "previous": "Vorige",
+    "search": "Zoeken",
+    "filter": "Filter",
+    "sort": "Sorteren",
+    "clear": "Wissen"
+  }
+}

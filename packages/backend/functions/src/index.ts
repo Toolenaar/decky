@@ -33,4 +33,11 @@ export {
   onCardUpdated,
   onCardDeleted,
   batchSyncCards,
-} from "./cardSync";
+} from "./elastic.functions";
+
+// Export Task functions
+export {
+  onTaskCreated,
+  processTaskManually,
+  cleanupCompletedTasks,
+} from "./tasks.functions";

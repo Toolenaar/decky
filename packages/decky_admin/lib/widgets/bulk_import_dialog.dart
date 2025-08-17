@@ -118,7 +118,7 @@ class _BulkImportDialogState extends State<BulkImportDialog> {
           .collection('cards')
           .where('imageDataStatus', isEqualTo: 'synced')
           .get();
-      
+
       // Count only those that also have scryfallData
       int completedCount = 0;
       for (final doc in snapshot.docs) {
@@ -127,7 +127,7 @@ class _BulkImportDialogState extends State<BulkImportDialog> {
           completedCount++;
         }
       }
-      
+
       return completedCount;
     } catch (e) {
       print('❌ Error getting completed cards count: $e');
@@ -180,9 +180,10 @@ class _BulkImportDialogState extends State<BulkImportDialog> {
         final imageDataStatus = data['imageDataStatus'];
         final firebaseImageUris = data['firebaseImageUris'];
         final scryfallData = data['scryfallData'];
+        final importError = data['importError'];
 
         // Include if missing images OR missing complete Scryfall data
-        if (imageDataStatus != 'synced' || firebaseImageUris == null || scryfallData == null) {
+        if (imageDataStatus != 'synced' || firebaseImageUris == null || scryfallData == null || importError == null) {
           try {
             data['uuid'] = doc.id;
             final card = MtgCard.fromJson(data);
@@ -259,7 +260,14 @@ class _BulkImportDialogState extends State<BulkImportDialog> {
             });
             continue;
           }
-
+          // skip cards with import error
+          if (card.importError != null) {
+            print('⚠️ Skipping card - import error');
+            setState(() {
+              _cardsToImport[i] = CardImportStatus(card: card, status: ImportStatus.skipped, error: 'Import error');
+            });
+            continue;
+          }
           // Skip cards that already have both images and complete Scryfall data
           if (card.imageDataStatus == 'synced' &&
               card.firebaseImageUris?.hasAnyImage == true &&
@@ -491,7 +499,10 @@ class _BulkImportDialogState extends State<BulkImportDialog> {
                           children: [
                             Icon(Icons.pending, size: 16, color: Colors.orange),
                             const SizedBox(width: 4),
-                            Text('Need Processing: ${_totalCardsInDb - _totalCompletedCards}', style: TextStyle(color: Colors.orange[700])),
+                            Text(
+                              'Need Processing: ${_totalCardsInDb - _totalCompletedCards}',
+                              style: TextStyle(color: Colors.orange[700]),
+                            ),
                           ],
                         ),
                       ],

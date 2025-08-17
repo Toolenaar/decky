@@ -78,6 +78,7 @@ class BulkImageImportService {
       final snapshot = await _firestore
           .collection('cards')
           .where(Filter.or(Filter('imageDataStatus', isNotEqualTo: 'synced'), Filter('imageDataStatus', isNull: true)))
+          .where('importError', isNull: true)
           .count()
           .get();
 
@@ -172,7 +173,15 @@ class BulkImageImportService {
           }
 
           if (_isCancelled) break;
-
+          //if the card has an import error, skip it
+          if (card.importError != null) {
+            progress = progress.copyWith(
+              processedCards: progress.processedCards + 1,
+              failedCards: progress.failedCards + 1,
+            );
+            _progressController!.add(progress);
+            continue;
+          }
           progress = progress.copyWith(currentCardName: card.name, state: BulkImportState.running);
           _progressController!.add(progress);
 

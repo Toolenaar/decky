@@ -10,3 +10,6 @@ export 'controller/user_controller.dart';
 
 // Export services
 export 'controller/elasticsearch_service.dart';
+
+// Export widgets
+export 'widgets/rarity_icon.dart';

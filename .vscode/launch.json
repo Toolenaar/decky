@@ -13,5 +13,17 @@
                 "ENVIRONMENT": "dev"
             } 
         },
+        {
+            "name": "Decky App (Development)",
+            "request": "launch",
+            "type": "dart",
+            "program": "packages/decky_app/lib/main.dart",
+            "args": [
+                "--dart-define=ENVIRONMENT=dev"
+            ],
+            "env": {
+                "ENVIRONMENT": "dev"
+            } 
+        },
     ]
 }

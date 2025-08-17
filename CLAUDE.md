@@ -106,6 +106,8 @@ Decky is a comprehensive Magic: The Gathering deck-building platform that levera
 3. Integration tests for critical user flows
 4. Cloud function tests for backend logic
 
+## Languages
+1. In flutter projects always put texts and display related strings in the appropriate language files using the EasyLocalization package
 ## Key Features to Implement
 
 ### Phase 1: Foundation

@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "1018602281281",
+    "project_id": "decky-dev",
+    "storage_bucket": "decky-dev.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1018602281281:android:615ff04642199cd8c129c0",
+        "android_client_info": {
+          "package_name": "jtms.app.decky"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBhB1ze1FNju4VdNxoeNeW9M2cqVFZq9ZE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

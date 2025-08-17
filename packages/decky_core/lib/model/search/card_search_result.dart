@@ -32,7 +32,6 @@ class CardSearchResult {
 
   factory CardSearchResult.fromElasticsearchHit(ElasticsearchHit hit) {
     final source = hit.source;
-    print(source);
     return CardSearchResult(
       id: source['uuid'] ?? hit.id,
       name: source['name'] ?? '',
@@ -66,6 +65,20 @@ class CardSearchResult {
   String? get imageUrl {
     if (firebaseImageUris?.hasAnyImage == true) {
       return firebaseImageUris!.small ?? firebaseImageUris!.normal ?? firebaseImageUris!.large;
+    }
+    return null;
+  }
+
+  String? get mediumImageUrl {
+    if (firebaseImageUris?.hasAnyImage == true) {
+      return firebaseImageUris!.normal ?? firebaseImageUris!.large;
+    }
+    return null;
+  }
+
+  String? get largeImageUrl {
+    if (firebaseImageUris?.hasAnyImage == true) {
+      return firebaseImageUris!.large ?? firebaseImageUris!.png ?? firebaseImageUris!.normal;
     }
     return null;
   }

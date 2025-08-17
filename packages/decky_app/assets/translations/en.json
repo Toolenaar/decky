@@ -1,0 +1,156 @@
+{
+  "app": {
+    "title": "Decky",
+    "welcome": "Welcome to Decky!"
+  },
+  "auth": {
+    "email": "Email",
+    "password": "Password",
+    "confirm_password": "Confirm Password",
+    "sign_in": "Sign In",
+    "sign_up": "Sign Up",
+    "create_account": "Create Account",
+    "sign_in_subtitle": "Sign in to continue",
+    "sign_up_subtitle": "Create your account",
+    "forgot_password": "Forgot Password?",
+    "dont_have_account": "Don't have an account?",
+    "already_have_account": "Already have an account?",
+    "email_placeholder": "your@email.com",
+    "errors": {
+      "enter_email": "Please enter your email",
+      "enter_password": "Please enter your password",
+      "confirm_password": "Please confirm your password",
+      "passwords_no_match": "Passwords do not match",
+      "valid_email": "Please enter a valid email",
+      "password_length": "Password must be at least 6 characters",
+      "user_not_found": "No user found with this email address.",
+      "wrong_password": "Incorrect password.",
+      "email_already_in_use": "This email is already registered.",
+      "invalid_email": "Invalid email address.",
+      "weak_password": "Password should be at least 6 characters.",
+      "user_disabled": "This account has been disabled.",
+      "too_many_requests": "Too many attempts. Please try again later.",
+      "keychain_error": "Keychain access error. Please check your macOS keychain settings.",
+      "auth_failed": "Authentication failed. Please try again.",
+      "unexpected_error": "An unexpected error occurred. Please try again.",
+      "reset_failed": "Failed to send reset email. Please try again.",
+      "enter_email_first": "Please enter your email address first",
+      "enter_valid_email": "Please enter a valid email address"
+    },
+    "password_reset_sent": "Password reset email sent to {email}",
+    "logout": "Logout",
+    "confirm_logout": "Confirm Logout",
+    "confirm_logout_message": "Are you sure you want to log out?",
+    "cancel": "Cancel",
+    "logout_failed": "Failed to logout: {error}"
+  },
+  "navigation": {
+    "decks": "Decks",
+    "find_cards": "Find Cards",
+    "collection": "Collection",
+    "profile": "Profile"
+  },
+  "dashboard": {
+    "title": "Decky Dashboard",
+    "unknown_user": "Unknown User",
+    "my_decks": "My Decks",
+    "my_decks_subtitle": "View and manage your deck collection",
+    "card_search": "Card Search",
+    "card_search_subtitle": "Find cards for your decks",
+    "ai_deck_builder": "AI Deck Builder",
+    "ai_deck_builder_subtitle": "Get AI-powered deck suggestions",
+    "coming_soon": {
+      "decks": "Decks feature coming soon!",
+      "card_search": "Card search feature coming soon!",
+      "ai_builder": "AI builder feature coming soon!"
+    }
+  },
+  "search": {
+    "title": "Find Cards",
+    "hint": "Search for Magic cards...",
+    "empty_state": {
+      "title": "Search for Magic cards",
+      "subtitle": "Enter a card name, type, or use filters to find cards"
+    },
+    "no_results": {
+      "title": "No cards found",
+      "subtitle": "Try adjusting your search or filters",
+      "clear_filters": "Clear Filters"
+    },
+    "error": {
+      "title": "Error: {message}",
+      "retry": "Retry"
+    },
+    "loading_more": "Loading more cards...",
+    "sort": {
+      "name_asc": "Name (A-Z)",
+      "name_desc": "Name (Z-A)",
+      "mana_value_asc": "Mana Value (Low to High)",
+      "mana_value_desc": "Mana Value (High to Low)",
+      "relevance": "Relevance"
+    },
+    "filters": {
+      "clear_all": "Clear All"
+    },
+    "card_tapped": "Tapped on {cardName}"
+  },
+  "profile": {
+    "title": "Profile",
+    "user_name": "User Name",
+    "user_email": "user@example.com",
+    "stats": {
+      "total_decks": "Total Decks",
+      "cards_in_collection": "Cards in Collection"
+    },
+    "actions": {
+      "edit_profile": "Edit Profile",
+      "notifications": "Notifications",
+      "help_support": "Help & Support",
+      "sign_out": "Sign Out"
+    }
+  },
+  "collection": {
+    "title": "My Collection",
+    "empty_state": {
+      "title": "Your card collection",
+      "subtitle": "Scan cards to add them"
+    },
+    "scan_cards": "Scan Cards"
+  },
+  "decks": {
+    "title": "My Decks",
+    "empty_state": {
+      "title": "Your deck collection"
+    }
+  },
+  "cards": {
+    "mana_cost": "Mana Cost: {cost}",
+    "no_image": "No image available",
+    "image_not_available": "Image not available",
+    "rarity": {
+      "common": "common",
+      "uncommon": "uncommon", 
+      "rare": "rare",
+      "mythic": "mythic"
+    }
+  },
+  "common": {
+    "user": "User",
+    "loading": "Loading...",
+    "error": "Error",
+    "retry": "Retry",
+    "cancel": "Cancel",
+    "confirm": "Confirm",
+    "save": "Save",
+    "delete": "Delete",
+    "edit": "Edit",
+    "close": "Close",
+    "back": "Back",
+    "next": "Next",
+    "previous": "Previous",
+    "search": "Search",
+    "filter": "Filter",
+    "sort": "Sort",
+    "clear": "Clear"
+  }
+}
