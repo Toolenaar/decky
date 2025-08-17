@@ -1,0 +1,26 @@
+{
+  "name": "@decky/elasticsearch-sync",
+  "version": "1.0.0",
+  "description": "Elasticsearch synchronization scripts for Decky",
+  "private": true,
+  "scripts": {
+    "presetup": "npm run build:lib",
+    "setup": "ts-node src/setup.ts",
+    "presync": "npm run build:lib",
+    "sync": "ts-node src/fullElasticsearchSync.ts",
+    "sync:clean": "ts-node src/fullElasticsearchSync.ts --clean",
+    "prevalidate": "npm run build:lib",
+    "validate": "ts-node src/validateElasticsearchSync.ts",
+    "build:lib": "cd ../../packages/elasticsearch-lib && npm install && npm run build"
+  },
+  "dependencies": {
+    "@decky/elasticsearch-lib": "file:../../packages/elasticsearch-lib",
+    "firebase-admin": "^12.0.0",
+    "dotenv": "^16.0.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "ts-node": "^10.9.0",
+    "typescript": "^5.3.0"
+  }
+}

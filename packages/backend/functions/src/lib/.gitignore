@@ -1,0 +1,4 @@
+# This directory contains copied build artifacts
+# It will be populated during build
+*
+!.gitignore

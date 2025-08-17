@@ -1,1 +1,73 @@
+# Data files
 scripts/data/
+
+# Dependencies
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Environment variables
+.env
+.env.local
+.env.*.local
+packages/backend/functions/.env
+
+# Firebase
+.firebase/
+firebase-debug.log*
+firebase-debug.*.log*
+
+# Service account keys
+*service-account*.json
+*firebase-adminsdk*.json
+*google-credentials*.json
+
+# Build outputs
+dist/
+
+build/
+packages/*/dist/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Logs
+logs/
+*.log
+
+# Temporary files
+tmp/
+temp/
+*.tmp
+
+# Coverage reports
+coverage/
+*.lcov
+
+# Flutter/Dart specific
+packages/decky_*/android/app/src/main/kotlin/
+packages/decky_*/ios/Runner/
+packages/decky_*/build/
+packages/decky_*/.dart_tool/
+packages/decky_*/pubspec.lock
+
+# Elasticsearch data (if running locally)
+elasticsearch-data/
+
+# Backup files
+*.bak
+*.backup
