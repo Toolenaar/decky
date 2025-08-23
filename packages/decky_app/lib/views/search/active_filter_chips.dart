@@ -1,10 +1,10 @@
 import 'package:decky_core/theme/app_theme.dart';
 import 'package:flutter/material.dart';
-import 'package:decky_core/providers/search_provider.dart';
+import 'package:decky_core/providers/base_search_provider.dart';
 import 'package:decky_core/widgets/rarity_icon.dart';
 
 class ActiveFilterChips extends StatefulWidget {
-  final SearchProvider searchProvider;
+  final BaseSearchProvider searchProvider;
 
   const ActiveFilterChips({super.key, required this.searchProvider});
 
@@ -63,7 +63,7 @@ class _ActiveFilterChipsState extends State<ActiveFilterChips> {
 }
 
 class _ColorFiltersSection extends StatelessWidget {
-  final SearchProvider searchProvider;
+  final BaseSearchProvider searchProvider;
 
   const _ColorFiltersSection({required this.searchProvider});
 
@@ -153,7 +153,7 @@ class _ColorFilterButton extends StatelessWidget {
 }
 
 class _RarityFiltersSection extends StatelessWidget {
-  final SearchProvider searchProvider;
+  final BaseSearchProvider searchProvider;
 
   const _RarityFiltersSection({required this.searchProvider});
 
@@ -233,7 +233,7 @@ class _RarityFilterButton extends StatelessWidget {
 }
 
 class _ManaCostFiltersSection extends StatelessWidget {
-  final SearchProvider searchProvider;
+  final BaseSearchProvider searchProvider;
 
   const _ManaCostFiltersSection({required this.searchProvider});
 
@@ -332,7 +332,7 @@ class _ManaCostFilterButton extends StatelessWidget {
 }
 
 class _ClearFiltersButton extends StatelessWidget {
-  final SearchProvider searchProvider;
+  final BaseSearchProvider searchProvider;
 
   const _ClearFiltersButton({required this.searchProvider});
 

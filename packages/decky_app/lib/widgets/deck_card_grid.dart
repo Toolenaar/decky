@@ -1,3 +1,4 @@
+import 'package:decky_app/widgets/card_grid.dart';
 import 'package:flutter/material.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:decky_core/model/deck_card.dart';
@@ -10,14 +11,6 @@ class DeckCardGrid extends StatefulWidget {
   final UserDecksController decksController;
   final Function(DeckCard)? onCardTap;
   final Function(DeckCard)? onCardLongPress;
-
-  // Static fields for easy experimentation with grid layout
-  static int mobileColumns = 2;          // Mobile: 2 cards per row
-  static int tabletColumns = 3;          // Tablet: 3 cards per row  
-  static int smallDesktopColumns = 4;    // Small desktop: 4 cards per row
-  static int largeDesktopColumns = 6;    // Large desktop: 6 cards per row
-  static double minCardWidth = 140;      // Minimum card width in pixels
-  static double cardSpacing = 8;         // Spacing between cards
 
   const DeckCardGrid({
     super.key,
@@ -60,26 +53,16 @@ class _DeckCardGridState extends State<DeckCardGrid> with TickerProviderStateMix
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Icon(
-                  Icons.error_outline,
-                  size: 64,
-                  color: Theme.of(context).colorScheme.error,
-                ),
+                Icon(Icons.error_outline, size: 64, color: Theme.of(context).colorScheme.error),
                 const SizedBox(height: 16),
                 Text(
                   'decks.detail.error_loading_cards'.tr(),
-                  style: TextStyle(
-                    fontSize: 18,
-                    color: Theme.of(context).colorScheme.error,
-                  ),
+                  style: TextStyle(fontSize: 18, color: Theme.of(context).colorScheme.error),
                 ),
                 const SizedBox(height: 8),
                 Text(
                   snapshot.error.toString(),
-                  style: TextStyle(
-                    fontSize: 14,
-                    color: Theme.of(context).colorScheme.onSurfaceVariant,
-                  ),
+                  style: TextStyle(fontSize: 14, color: Theme.of(context).colorScheme.onSurfaceVariant),
                   textAlign: TextAlign.center,
                 ),
               ],
@@ -105,44 +88,39 @@ class _DeckCardGridState extends State<DeckCardGrid> with TickerProviderStateMix
 
         // Determine available tabs based on cards present - Commander first
         final availableTabs = <({String title, List<DeckCard> cards, int count, bool isEmpty})>[];
-        
+
         // Always add Commander tab first (if commanders exist)
         if (commanders.isNotEmpty) {
           availableTabs.add((
-            title: 'decks.detail.commander'.tr(), 
-            cards: commanders, 
+            title: 'decks.detail.commander'.tr(),
+            cards: commanders,
             count: commanderCount,
-            isEmpty: false
+            isEmpty: false,
           ));
         }
-        
+
         // Add Mainboard tab
         if (mainboard.isNotEmpty) {
           availableTabs.add((
-            title: 'decks.detail.mainboard'.tr(), 
-            cards: mainboard, 
+            title: 'decks.detail.mainboard'.tr(),
+            cards: mainboard,
             count: mainboardCount,
-            isEmpty: false
+            isEmpty: false,
           ));
         }
-        
+
         // Add Sideboard tab
         if (sideboard.isNotEmpty) {
           availableTabs.add((
-            title: 'decks.detail.sideboard'.tr(), 
-            cards: sideboard, 
+            title: 'decks.detail.sideboard'.tr(),
+            cards: sideboard,
             count: sideboardCount,
-            isEmpty: false
+            isEmpty: false,
           ));
         }
 
         // Always add Brainstorm tab (empty for now)
-        availableTabs.add((
-          title: 'Brainstorm', 
-          cards: <DeckCard>[], 
-          count: 0,
-          isEmpty: true
-        ));
+        availableTabs.add((title: 'Brainstorm', cards: <DeckCard>[], count: 0, isEmpty: true));
 
         // If no actual cards, show empty state
         if (commanders.isEmpty && mainboard.isEmpty && sideboard.isEmpty) {
@@ -179,47 +157,43 @@ class _DeckCardGridState extends State<DeckCardGrid> with TickerProviderStateMix
                   indicatorSize: TabBarIndicatorSize.tab,
                   dividerColor: Colors.transparent,
                   padding: const EdgeInsets.all(4),
-                  tabs: availableTabs.map((tab) => Tab(
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 8),
-                      child: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Text(tab.title),
-                          if (!tab.isEmpty) ...[
-                            const SizedBox(width: 4),
-                            Container(
-                              padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
-                              decoration: BoxDecoration(
-                                color: Theme.of(context).colorScheme.primaryContainer.withValues(alpha: 0.3),
-                                borderRadius: BorderRadius.circular(8),
-                              ),
-                              child: Text(
-                                '${tab.count}',
-                                style: const TextStyle(fontSize: 12),
-                              ),
+                  tabs: availableTabs
+                      .map(
+                        (tab) => Tab(
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 8),
+                            child: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Text(tab.title),
+                                if (!tab.isEmpty) ...[
+                                  const SizedBox(width: 4),
+                                  Container(
+                                    padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                                    decoration: BoxDecoration(
+                                      color: Theme.of(context).colorScheme.primaryContainer.withValues(alpha: 0.3),
+                                      borderRadius: BorderRadius.circular(8),
+                                    ),
+                                    child: Text('${tab.count}', style: const TextStyle(fontSize: 12)),
+                                  ),
+                                ],
+                              ],
                             ),
-                          ],
-                        ],
-                      ),
-                    ),
-                  )).toList(),
+                          ),
+                        ),
+                      )
+                      .toList(),
                 ),
               ),
             ),
-            
+
             // Tab content
             Expanded(
               child: TabBarView(
                 controller: _tabController,
-                children: availableTabs.map((tab) => 
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 16),
-                    child: tab.isEmpty 
-                        ? _buildBrainstormContent(context)
-                        : _buildCardGrid(context, tab.cards),
-                  )
-                ).toList(),
+                children: availableTabs
+                    .map((tab) => tab.isEmpty ? _buildBrainstormContent(context) : _buildCardGrid(context, tab.cards))
+                    .toList(),
               ),
             ),
           ],
@@ -235,17 +209,13 @@ class _DeckCardGridState extends State<DeckCardGrid> with TickerProviderStateMix
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(
-              Icons.style,
-              size: 64,
-              color: Theme.of(context).colorScheme.onSurfaceVariant.withValues(alpha: 0.5),
-            ),
+            Icon(Icons.style, size: 64, color: Theme.of(context).colorScheme.onSurfaceVariant.withValues(alpha: 0.5)),
             const SizedBox(height: 16),
             Text(
               'decks.detail.no_cards'.tr(),
-              style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                color: Theme.of(context).colorScheme.onSurfaceVariant,
-              ),
+              style: Theme.of(
+                context,
+              ).textTheme.titleMedium?.copyWith(color: Theme.of(context).colorScheme.onSurfaceVariant),
             ),
             const SizedBox(height: 8),
             Text(
@@ -276,9 +246,9 @@ class _DeckCardGridState extends State<DeckCardGrid> with TickerProviderStateMix
             const SizedBox(height: 16),
             Text(
               'Brainstorm',
-              style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                color: Theme.of(context).colorScheme.onSurfaceVariant,
-              ),
+              style: Theme.of(
+                context,
+              ).textTheme.titleLarge?.copyWith(color: Theme.of(context).colorScheme.onSurfaceVariant),
             ),
             const SizedBox(height: 8),
             Text(
@@ -295,58 +265,16 @@ class _DeckCardGridState extends State<DeckCardGrid> with TickerProviderStateMix
   }
 
   Widget _buildCardGrid(BuildContext context, List<DeckCard> cards) {
-    return LayoutBuilder(
-      builder: (context, constraints) {
-        final width = constraints.maxWidth;
-        int crossAxisCount;
-        double cardWidth;
-
-        // Responsive grid calculations using static fields
-        if (width < 600) {
-          // Mobile
-          crossAxisCount = DeckCardGrid.mobileColumns;
-        } else if (width < 900) {
-          // Tablet
-          crossAxisCount = DeckCardGrid.tabletColumns;
-        } else if (width < 1200) {
-          // Small desktop
-          crossAxisCount = DeckCardGrid.smallDesktopColumns;
-        } else {
-          // Large desktop - use either fixed columns or calculate based on min width
-          final calculatedColumns = (width / DeckCardGrid.minCardWidth).floor();
-          crossAxisCount = calculatedColumns > DeckCardGrid.largeDesktopColumns ? DeckCardGrid.largeDesktopColumns : calculatedColumns;
-        }
-
-        // Calculate actual card width based on available space
-        final totalSpacing = DeckCardGrid.cardSpacing * (crossAxisCount - 1);
-        cardWidth = (width - totalSpacing) / crossAxisCount;
-        
-        // Ensure minimum card width
-        if (cardWidth < DeckCardGrid.minCardWidth) {
-          cardWidth = DeckCardGrid.minCardWidth;
-        }
-
-        final cardHeight = cardWidth * 1.4;
-
-        return GridView.builder(
-          physics: const AlwaysScrollableScrollPhysics(),
-          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-            crossAxisCount: crossAxisCount,
-            crossAxisSpacing: DeckCardGrid.cardSpacing,
-            mainAxisSpacing: DeckCardGrid.cardSpacing,
-            childAspectRatio: cardWidth / cardHeight,
-          ),
-          itemCount: cards.length,
-          itemBuilder: (context, index) {
-            final card = cards[index];
-            return DeckCardTile(
-              card: card,
-              width: cardWidth,
-              onTap: widget.onCardTap != null ? () => widget.onCardTap!(card) : null,
-              onLongPress: widget.onCardLongPress != null ? () => widget.onCardLongPress!(card) : null,
-              onRemove: () => _removeCard(card),
-            );
-          },
+    return CardGrid(
+      length: cards.length,
+      builder: (index, cardWidth) {
+        final card = cards[index];
+        return DeckCardTile(
+          card: card,
+          width: cardWidth,
+          onTap: widget.onCardTap != null ? () => widget.onCardTap!(card) : null,
+          onLongPress: widget.onCardLongPress != null ? () => widget.onCardLongPress!(card) : null,
+          onRemove: () => _removeCard(card),
         );
       },
     );
@@ -375,19 +303,12 @@ class DeckCardTile extends StatelessWidget {
   final VoidCallback? onLongPress;
   final VoidCallback? onRemove;
 
-  const DeckCardTile({
-    super.key,
-    required this.card,
-    required this.width,
-    this.onTap,
-    this.onLongPress,
-    this.onRemove,
-  });
+  const DeckCardTile({super.key, required this.card, required this.width, this.onTap, this.onLongPress, this.onRemove});
 
   @override
   Widget build(BuildContext context) {
     final cardHeight = width * 1.4;
-    
+
     return GestureDetector(
       onTap: onTap,
       onLongPress: onLongPress,
@@ -399,19 +320,12 @@ class DeckCardTile extends StatelessWidget {
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(8),
               boxShadow: [
-                BoxShadow(
-                  color: Colors.black.withValues(alpha: 0.1),
-                  blurRadius: 4,
-                  offset: const Offset(0, 2),
-                ),
+                BoxShadow(color: Colors.black.withValues(alpha: 0.1), blurRadius: 4, offset: const Offset(0, 2)),
               ],
             ),
-            child: ClipRRect(
-              borderRadius: BorderRadius.circular(8),
-              child: _buildCardImage(),
-            ),
+            child: ClipRRect(borderRadius: BorderRadius.circular(8), child: _buildCardImage()),
           ),
-          
+
           // Count badge
           if (card.count > 1)
             Positioned(
@@ -425,15 +339,11 @@ class DeckCardTile extends StatelessWidget {
                 ),
                 child: Text(
                   '${card.count}',
-                  style: const TextStyle(
-                    color: Colors.white,
-                    fontSize: 12,
-                    fontWeight: FontWeight.bold,
-                  ),
+                  style: const TextStyle(color: Colors.white, fontSize: 12, fontWeight: FontWeight.bold),
                 ),
               ),
             ),
-          
+
           // Commander indicator
           if (card.isCommander)
             Positioned(
@@ -445,11 +355,7 @@ class DeckCardTile extends StatelessWidget {
                   color: Colors.amber.withValues(alpha: 0.9),
                   borderRadius: BorderRadius.circular(4),
                 ),
-                child: const Icon(
-                  Icons.star,
-                  color: Colors.white,
-                  size: 14,
-                ),
+                child: const Icon(Icons.star, color: Colors.white, size: 14),
               ),
             ),
 
@@ -466,11 +372,7 @@ class DeckCardTile extends StatelessWidget {
                     color: Colors.red.withValues(alpha: 0.8),
                     borderRadius: BorderRadius.circular(12),
                   ),
-                  child: const Icon(
-                    Icons.remove,
-                    color: Colors.white,
-                    size: 14,
-                  ),
+                  child: const Icon(Icons.remove, color: Colors.white, size: 14),
                 ),
               ),
             ),
@@ -483,7 +385,7 @@ class DeckCardTile extends StatelessWidget {
     // Use card image if available
     final imageUris = card.mtgCardReference.firebaseImageUris;
     final imageUrl = imageUris?.normal ?? imageUris?.large ?? imageUris?.small;
-    
+
     if (imageUrl != null) {
       return CachedNetworkImage(
         imageUrl: imageUrl,
@@ -492,7 +394,7 @@ class DeckCardTile extends StatelessWidget {
         errorWidget: (context, url, error) => _buildPlaceholder(),
       );
     }
-    
+
     return _buildPlaceholder();
   }
 
@@ -502,32 +404,20 @@ class DeckCardTile extends StatelessWidget {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Icon(
-            Icons.image,
-            size: width * 0.3,
-            color: Colors.grey[600],
-          ),
+          Icon(Icons.image, size: width * 0.3, color: Colors.grey[600]),
           const SizedBox(height: 4),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 4),
             child: Text(
               card.mtgCardReference.name,
-              style: TextStyle(
-                fontSize: 10,
-                fontWeight: FontWeight.bold,
-                color: Colors.grey[800],
-              ),
+              style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold, color: Colors.grey[800]),
               textAlign: TextAlign.center,
               maxLines: 2,
               overflow: TextOverflow.ellipsis,
             ),
           ),
           const SizedBox(height: 2),
-          if (card.mtgCardReference.rarity.isNotEmpty)
-            RarityIcon(
-              rarity: card.mtgCardReference.rarity,
-              size: 12,
-            ),
+          if (card.mtgCardReference.rarity.isNotEmpty) RarityIcon(rarity: card.mtgCardReference.rarity, size: 12),
         ],
       ),
     );

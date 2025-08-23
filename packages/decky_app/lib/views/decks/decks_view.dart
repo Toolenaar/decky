@@ -24,10 +24,10 @@ class _DecksViewState extends State<DecksView> {
     super.initState();
     _userController = GetIt.instance<UserController>();
     _decksController = GetIt.instance<UserDecksController>();
-    
+
     // Initialize decks controller with account ID
     _initializeDecksController();
-    
+
     // Listen to account changes in case it loads after this widget
     _userController.accountSink.listen((account) {
       if (account != null && mounted) {
@@ -35,7 +35,7 @@ class _DecksViewState extends State<DecksView> {
       }
     });
   }
-  
+
   void _initializeDecksController() {
     if (_userController.account != null) {
       _decksController.initialize(_userController.account!.id);
@@ -45,47 +45,6 @@ class _DecksViewState extends State<DecksView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-          title: Text('decks.title'.tr()),
-          automaticallyImplyLeading: false,
-          actions: [
-            PopupMenuButton<String>(
-              onSelected: _handleSortOption,
-              itemBuilder: (context) => [
-                PopupMenuItem(
-                  value: 'name',
-                  child: Row(
-                    children: [
-                      const Icon(Icons.sort_by_alpha, size: 20),
-                      const SizedBox(width: 12),
-                      Text('decks.sort.name'.tr()),
-                    ],
-                  ),
-                ),
-                PopupMenuItem(
-                  value: 'date',
-                  child: Row(
-                    children: [
-                      const Icon(Icons.calendar_today, size: 20),
-                      const SizedBox(width: 12),
-                      Text('decks.sort.date'.tr()),
-                    ],
-                  ),
-                ),
-                PopupMenuItem(
-                  value: 'format',
-                  child: Row(
-                    children: [
-                      const Icon(Icons.category, size: 20),
-                      const SizedBox(width: 12),
-                      Text('decks.sort.format'.tr()),
-                    ],
-                  ),
-                ),
-              ],
-            ),
-          ],
-        ),
       body: StreamBuilder<List<UserDeck>>(
         stream: _decksController.decksStream,
         builder: (context, snapshot) {
@@ -98,26 +57,16 @@ class _DecksViewState extends State<DecksView> {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Icon(
-                    Icons.error_outline,
-                    size: 64,
-                    color: Theme.of(context).colorScheme.error,
-                  ),
+                  Icon(Icons.error_outline, size: 64, color: Theme.of(context).colorScheme.error),
                   const SizedBox(height: 16),
                   Text(
                     'decks.error.loading'.tr(),
-                    style: TextStyle(
-                      fontSize: 18,
-                      color: Theme.of(context).colorScheme.error,
-                    ),
+                    style: TextStyle(fontSize: 18, color: Theme.of(context).colorScheme.error),
                   ),
                   const SizedBox(height: 8),
                   Text(
                     snapshot.error.toString(),
-                    style: TextStyle(
-                      fontSize: 14,
-                      color: Theme.of(context).colorScheme.onSurfaceVariant,
-                    ),
+                    style: TextStyle(fontSize: 14, color: Theme.of(context).colorScheme.onSurfaceVariant),
                     textAlign: TextAlign.center,
                   ),
                   const SizedBox(height: 16),
@@ -156,17 +105,13 @@ class _DecksViewState extends State<DecksView> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(
-              Icons.style,
-              size: 80,
-              color: Theme.of(context).colorScheme.onSurfaceVariant.withValues(alpha: 0.5),
-            ),
+            Icon(Icons.style, size: 80, color: Theme.of(context).colorScheme.onSurfaceVariant.withValues(alpha: 0.5)),
             const SizedBox(height: 24),
             Text(
               'decks.empty_state.title'.tr(),
-              style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                color: Theme.of(context).colorScheme.onSurfaceVariant,
-              ),
+              style: Theme.of(
+                context,
+              ).textTheme.headlineSmall?.copyWith(color: Theme.of(context).colorScheme.onSurfaceVariant),
             ),
             const SizedBox(height: 8),
             Text(
@@ -197,7 +142,7 @@ class _DecksViewState extends State<DecksView> {
 
         // Minimum width for tiles
         const double minTileWidth = 280.0;
-        
+
         // Responsive grid calculations with max 5 columns
         if (width < 600) {
           // Mobile: 1 column
@@ -231,13 +176,8 @@ class _DecksViewState extends State<DecksView> {
             final deck = decks[index];
             final cardCount = _decksController.getDeckCardCount(deck.id);
             final isValid = _decksController.isDeckValid(deck);
-            
-            return DeckGridTile(
-              deck: deck,
-              cardCount: cardCount,
-              isValid: isValid,
-              onTap: () => _openDeck(deck),
-            );
+
+            return DeckGridTile(deck: deck, cardCount: cardCount, isValid: isValid, onTap: () => _openDeck(deck));
           },
         );
       },
@@ -252,19 +192,13 @@ class _DecksViewState extends State<DecksView> {
 
     if (result != null) {
       try {
-        final deck = await _decksController.createDeck(
-          name: result['name'],
-          format: result['format'],
-        );
-        
+        final deck = await _decksController.createDeck(name: result['name'], format: result['format']);
+
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
               content: Text('decks.created_success'.tr(namedArgs: {'name': deck.name})),
-              action: SnackBarAction(
-                label: 'decks.open'.tr(),
-                onPressed: () => _openDeck(deck),
-              ),
+              action: SnackBarAction(label: 'decks.open'.tr(), onPressed: () => _openDeck(deck)),
             ),
           );
         }
@@ -287,13 +221,10 @@ class _DecksViewState extends State<DecksView> {
 
   void _handleSortOption(String option) {
     // TODO: Implement sorting
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text('decks.sort.coming_soon'.tr())),
-    );
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('decks.sort.coming_soon'.tr())));
   }
 
   void _retryLoad() {
     _initializeDecksController();
   }
-
 }

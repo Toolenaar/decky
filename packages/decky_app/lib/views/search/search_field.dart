@@ -1,19 +1,12 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
-import 'package:decky_core/providers/search_provider.dart';
+import 'package:decky_core/providers/base_search_provider.dart';
 import 'package:easy_localization/easy_localization.dart';
 
 class SearchField extends StatefulWidget {
-  final SearchProvider searchProvider;
-  final bool showFilters;
-  final VoidCallback onToggleFilters;
+  final BaseSearchProvider searchProvider;
 
-  const SearchField({
-    super.key,
-    required this.searchProvider,
-    required this.showFilters,
-    required this.onToggleFilters,
-  });
+  const SearchField({super.key, required this.searchProvider});
 
   @override
   State<SearchField> createState() => _SearchFieldState();
@@ -112,43 +105,21 @@ class _SearchFieldState extends State<SearchField> {
           ),
           const SizedBox(width: 8),
 
-          ListenableBuilder(
-            listenable: widget.searchProvider,
-            builder: (context, child) {
-              return Container(
-                decoration: BoxDecoration(
-                  border: Border.all(color: Colors.grey[300]!),
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                child: IconButton(
-                  icon: Badge(
-                    isLabelVisible: widget.searchProvider.activeFilterCount > 0,
-                    label: Text('${widget.searchProvider.activeFilterCount}'),
-                    child: Icon(
-                      widget.showFilters ? Icons.filter_list : Icons.filter_list_outlined,
-                      color: widget.showFilters ? Theme.of(context).primaryColor : null,
-                    ),
-                  ),
-                  onPressed: widget.onToggleFilters,
-                ),
-              );
-            },
-          ),
-          const SizedBox(width: 8),
-          PopupMenuButton<String>(
-            icon: const Icon(Icons.sort),
-            onSelected: (value) {
-              final parts = value.split(':');
-              widget.searchProvider.applySortOrder(parts[0], parts[1]);
-            },
-            itemBuilder: (context) => [
-              PopupMenuItem(value: 'name:asc', child: Text('search.sort.name_asc'.tr())),
-              PopupMenuItem(value: 'name:desc', child: Text('search.sort.name_desc'.tr())),
-              PopupMenuItem(value: 'mana_value:asc', child: Text('search.sort.mana_value_asc'.tr())),
-              PopupMenuItem(value: 'mana_value:desc', child: Text('search.sort.mana_value_desc'.tr())),
-              PopupMenuItem(value: '_score:desc', child: Text('search.sort.relevance'.tr())),
-            ],
-          ),
+          // const SizedBox(width: 8),
+          // PopupMenuButton<String>(
+          //   icon: const Icon(Icons.sort),
+          //   onSelected: (value) {
+          //     final parts = value.split(':');
+          //     widget.searchProvider.applySortOrder(parts[0], parts[1]);
+          //   },
+          //   itemBuilder: (context) => [
+          //     PopupMenuItem(value: 'name:asc', child: Text('search.sort.name_asc'.tr())),
+          //     PopupMenuItem(value: 'name:desc', child: Text('search.sort.name_desc'.tr())),
+          //     PopupMenuItem(value: 'mana_value:asc', child: Text('search.sort.mana_value_asc'.tr())),
+          //     PopupMenuItem(value: 'mana_value:desc', child: Text('search.sort.mana_value_desc'.tr())),
+          //     PopupMenuItem(value: '_score:desc', child: Text('search.sort.relevance'.tr())),
+          //   ],
+          // ),
         ],
       ),
     );

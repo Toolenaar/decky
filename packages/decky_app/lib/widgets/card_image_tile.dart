@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:decky_core/model/search/card_search_result.dart';
+import 'package:decky_core/model/collection_card.dart';
+import 'package:decky_core/controller/user_collection_controller.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:decky_core/widgets/rarity_icon.dart';
+import 'package:get_it/get_it.dart';
 
 class HoverableCardImage extends StatefulWidget {
   final Widget child;
@@ -188,28 +191,98 @@ class CardImageTile extends StatelessWidget {
   final double? width;
   final double? height;
   final bool showDetails;
+  final bool showCollectionIndicator;
+  final bool enableCollectionAdd;
 
-  const CardImageTile({super.key, required this.card, this.onTap, this.width, this.height, this.showDetails = false});
+  const CardImageTile({
+    super.key,
+    required this.card,
+    this.onTap,
+    this.width,
+    this.height,
+    this.showDetails = false,
+    this.showCollectionIndicator = true,
+    this.enableCollectionAdd = true,
+  });
 
   @override
   Widget build(BuildContext context) {
     final cardWidth = width ?? 160.0;
-    final cardHeight = height ?? (cardWidth * 1.4); // Magic card aspect ratio
+    final cardImageHeight = height ?? (cardWidth * 1.4); // Magic card aspect ratio
+    final collectionButtonHeight = enableCollectionAdd ? 36.0 : 0.0;
+    final detailsHeight = showDetails ? 60.0 : 0.0;
+    // Add some padding to account for Card widget margins
+    final totalHeight = cardImageHeight + detailsHeight + collectionButtonHeight + 8.0;
+    final collectionController = GetIt.instance<UserCollectionController>();
 
     return SizedBox(
       width: cardWidth,
-      height: cardHeight + (showDetails ? 60 : 0),
+      height: totalHeight,
       child: Card(
         clipBehavior: Clip.antiAlias,
-        child: InkWell(
-          onTap: onTap,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              Expanded(child: _buildCardImage(cardWidth, cardHeight)),
-              if (showDetails) _buildCardDetails(),
-            ],
-          ),
+        margin: const EdgeInsets.all(4), // Reduce default margin
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          mainAxisSize: MainAxisSize.min, // Allow column to shrink
+          children: [
+            SizedBox(
+              height: cardImageHeight,
+              child: Stack(
+                children: [
+                  InkWell(onTap: onTap, child: _buildCardImage(cardWidth, cardImageHeight)),
+                  if (showCollectionIndicator)
+                    StreamBuilder<Map<String, CollectionCard>>(
+                      stream: collectionController.cardsByUuidStream,
+                      builder: (context, snapshot) {
+                        final isInCollection = collectionController.isCardInCollection(card.id);
+                        if (!isInCollection) return const SizedBox.shrink();
+
+                        final collectionCard = collectionController.getCardFromCollection(card.id);
+                        final count = collectionCard?.count ?? 0;
+
+                        return Positioned(
+                          top: 8,
+                          right: 8,
+                          child: Container(
+                            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                            decoration: BoxDecoration(
+                              color: Theme.of(context).colorScheme.primary,
+                              borderRadius: BorderRadius.circular(12),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.black.withValues(alpha: 0.2),
+                                  blurRadius: 4,
+                                  offset: const Offset(0, 2),
+                                ),
+                              ],
+                            ),
+                            child: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Icon(Icons.check_circle, size: 16, color: Theme.of(context).colorScheme.onPrimary),
+                                if (count > 1) ...[
+                                  const SizedBox(width: 4),
+                                  Text(
+                                    '$count',
+                                    style: TextStyle(
+                                      color: Theme.of(context).colorScheme.onPrimary,
+                                      fontSize: 12,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                ],
+                              ],
+                            ),
+                          ),
+                        );
+                      },
+                    ),
+                ],
+              ),
+            ),
+            if (showDetails) _buildCardDetails(),
+            if (enableCollectionAdd) _buildCollectionButton(context, collectionController),
+          ],
         ),
       ),
     );
@@ -332,6 +405,178 @@ class CardImageTile extends StatelessWidget {
   Widget _buildRarityIndicator() {
     return RarityIcon(rarity: card.rarity, size: 10);
   }
+
+  Widget _buildCollectionButton(BuildContext context, UserCollectionController collectionController) {
+    return StreamBuilder<Map<String, CollectionCard>>(
+      stream: collectionController.cardsByUuidStream,
+      builder: (context, snapshot) {
+        final isInCollection = collectionController.isCardInCollection(card.id);
+        final collectionCard = collectionController.getCardFromCollection(card.id);
+        final count = collectionCard?.count ?? 0;
+
+        return Container(
+          height: 36,
+          decoration: BoxDecoration(
+            color: isInCollection
+                ? Theme.of(context).colorScheme.primaryContainer.withValues(alpha: 0.3)
+                : Theme.of(context).colorScheme.surface,
+            border: Border(top: BorderSide(color: Theme.of(context).dividerColor.withValues(alpha: 0.3))),
+          ),
+          child: Material(
+            color: Colors.transparent,
+            child: InkWell(
+              onTap: () => _handleCollectionAction(context, collectionController, isInCollection),
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 8),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Icon(
+                      isInCollection ? Icons.library_add_check : Icons.library_add,
+                      size: 16,
+                      color: isInCollection
+                          ? Theme.of(context).colorScheme.primary
+                          : Theme.of(context).colorScheme.onSurfaceVariant,
+                    ),
+                    const SizedBox(width: 4),
+                    Text(
+                      isInCollection
+                          ? 'collection.in_collection'.tr(namedArgs: {'count': count.toString()})
+                          : 'collection.add_to_collection'.tr(),
+                      style: TextStyle(
+                        fontSize: 12,
+                        fontWeight: isInCollection ? FontWeight.bold : FontWeight.normal,
+                        color: isInCollection
+                            ? Theme.of(context).colorScheme.primary
+                            : Theme.of(context).colorScheme.onSurfaceVariant,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  void _handleCollectionAction(
+    BuildContext context,
+    UserCollectionController collectionController,
+    bool isInCollection,
+  ) async {
+    try {
+      if (isInCollection) {
+        // Show options to update or remove
+        showModalBottomSheet(
+          context: context,
+          builder: (context) => _buildCollectionOptionsSheet(context, collectionController),
+        );
+      } else {
+        // Add to collection by fetching real MTG card data from Firestore
+        await collectionController.addCardToCollectionByUuid(cardUuid: card.id);
+
+        if (context.mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text('collection.added_to_collection'.tr(namedArgs: {'name': card.name})),
+              duration: const Duration(seconds: 2),
+            ),
+          );
+        }
+      }
+    } catch (e) {
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('collection.error_updating'.tr()),
+            backgroundColor: Theme.of(context).colorScheme.error,
+          ),
+        );
+      }
+    }
+  }
+
+  Widget _buildCollectionOptionsSheet(BuildContext context, UserCollectionController collectionController) {
+    final collectionCard = collectionController.getCardFromCollection(card.id)!;
+    int tempCount = collectionCard.count;
+
+    return StatefulBuilder(
+      builder: (context, setState) => Container(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text(card.name, style: Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold)),
+            const SizedBox(height: 16),
+            Text('collection.quantity'.tr(), style: Theme.of(context).textTheme.bodyMedium),
+            const SizedBox(height: 8),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                IconButton(
+                  onPressed: tempCount > 1 ? () => setState(() => tempCount--) : null,
+                  icon: const Icon(Icons.remove),
+                ),
+                Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                  decoration: BoxDecoration(
+                    border: Border.all(color: Theme.of(context).dividerColor),
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  child: Text(tempCount.toString(), style: Theme.of(context).textTheme.titleLarge),
+                ),
+                IconButton(onPressed: () => setState(() => tempCount++), icon: const Icon(Icons.add)),
+              ],
+            ),
+            const SizedBox(height: 16),
+            Row(
+              children: [
+                Expanded(
+                  child: TextButton(
+                    onPressed: () async {
+                      await collectionController.removeCardFromCollection(
+                        cardUuid: card.id,
+                        count: collectionCard.count,
+                      );
+                      if (context.mounted) {
+                        Navigator.pop(context);
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            content: Text('collection.removed_from_collection'.tr(namedArgs: {'name': card.name})),
+                          ),
+                        );
+                      }
+                    },
+                    child: Text('collection.remove'.tr(), style: TextStyle(color: Theme.of(context).colorScheme.error)),
+                  ),
+                ),
+                const SizedBox(width: 8),
+                Expanded(
+                  child: FilledButton(
+                    onPressed: tempCount != collectionCard.count
+                        ? () async {
+                            await collectionController.updateCardCount(collectionCard, tempCount);
+                            if (context.mounted) {
+                              Navigator.pop(context);
+                              ScaffoldMessenger.of(
+                                context,
+                              ).showSnackBar(SnackBar(content: Text('collection.updated'.tr())));
+                            }
+                          }
+                        : null,
+                    child: Text('collection.update'.tr()),
+                  ),
+                ),
+              ],
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
 }
 
 class CardImageGrid extends StatelessWidget {
@@ -379,7 +624,7 @@ class CardImageGrid extends StatelessWidget {
           cardWidth = (width - 80 - 32) / 5;
         }
 
-        final cardHeight = cardWidth * 1.4 + (showDetails ? 60 : 0);
+        final cardHeight = cardWidth * 1.4 + (showDetails ? 60 : 0) + 36 + 8; // Include collection button and padding
 
         return Column(
           children: [

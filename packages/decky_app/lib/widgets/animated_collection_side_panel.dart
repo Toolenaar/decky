@@ -1,34 +1,32 @@
 import 'package:flutter/material.dart';
-import 'package:decky_core/model/user_deck.dart';
-import 'package:decky_core/model/deck_card.dart';
-import 'package:decky_core/controller/user_decks_controller.dart';
-import 'deck_card_side_panel.dart';
+import 'package:easy_localization/easy_localization.dart';
+import 'package:decky_core/model/collection_card.dart';
+import 'package:decky_core/controller/user_collection_controller.dart';
+import 'collection_card_side_panel.dart';
 
-class AnimatedDeckSidePanel extends StatefulWidget {
-  final UserDeck deck;
-  final UserDecksController decksController;
-  final void Function(DeckCard) onCardTap;
-  final DeckCard? selectedCard;
+class AnimatedCollectionSidePanel extends StatefulWidget {
+  final UserCollectionController collectionController;
+  final void Function(CollectionCard) onCardTap;
+  final CollectionCard? selectedCard;
   final VoidCallback? onCardBack;
   final bool initiallyVisible;
   final Widget child;
 
-  const AnimatedDeckSidePanel({
+  const AnimatedCollectionSidePanel({
     super.key,
-    required this.deck,
-    required this.decksController,
+    required this.collectionController,
     required this.onCardTap,
     this.selectedCard,
     this.onCardBack,
     required this.child,
-    this.initiallyVisible = true,
+    this.initiallyVisible = false,
   });
 
   @override
-  State<AnimatedDeckSidePanel> createState() => _AnimatedDeckSidePanelState();
+  State<AnimatedCollectionSidePanel> createState() => _AnimatedCollectionSidePanelState();
 }
 
-class _AnimatedDeckSidePanelState extends State<AnimatedDeckSidePanel> with SingleTickerProviderStateMixin {
+class _AnimatedCollectionSidePanelState extends State<AnimatedCollectionSidePanel> with SingleTickerProviderStateMixin {
   late AnimationController _animationController;
   late Animation<double> _slideAnimation;
   late bool _isVisible;
@@ -122,10 +120,10 @@ class _AnimatedDeckSidePanelState extends State<AnimatedDeckSidePanel> with Sing
               right: 16,
               child: FloatingActionButton.small(
                 onPressed: _togglePanel,
-                heroTag: "mobile_side_panel_fab",
+                heroTag: "mobile_collection_panel_fab",
                 backgroundColor: theme.colorScheme.primaryContainer,
                 foregroundColor: theme.colorScheme.onPrimaryContainer,
-                child: const Icon(Icons.view_sidebar),
+                child: const Icon(Icons.list),
               ),
             ),
         ],
@@ -162,10 +160,10 @@ class _AnimatedDeckSidePanelState extends State<AnimatedDeckSidePanel> with Sing
                   right: 16,
                   child: FloatingActionButton.small(
                     onPressed: _togglePanel,
-                    heroTag: "side_panel_fab",
+                    heroTag: "collection_panel_fab",
                     backgroundColor: theme.colorScheme.primaryContainer,
                     foregroundColor: theme.colorScheme.onPrimaryContainer,
-                    child: const Icon(Icons.view_sidebar),
+                    child: const Icon(Icons.list),
                   ),
                 ),
             ],
@@ -207,7 +205,7 @@ class _AnimatedDeckSidePanelState extends State<AnimatedDeckSidePanel> with Sing
                 ],
                 Expanded(
                   child: Text(
-                    widget.selectedCard?.mtgCardReference.name ?? 'Deck Cards',
+                    widget.selectedCard?.mtgCardReference.name ?? 'collection.title'.tr(),
                     style: Theme.of(context).textTheme.titleSmall?.copyWith(fontWeight: FontWeight.w600),
                     overflow: TextOverflow.ellipsis,
                   ),
@@ -225,9 +223,8 @@ class _AnimatedDeckSidePanelState extends State<AnimatedDeckSidePanel> with Sing
           ),
           // Panel content
           Expanded(
-            child: DeckCardSidePanel(
-              deck: widget.deck,
-              decksController: widget.decksController,
+            child: CollectionCardSidePanel(
+              collectionController: widget.collectionController,
               onCardTap: widget.onCardTap,
               selectedCard: widget.selectedCard,
               onCardBack: widget.onCardBack,

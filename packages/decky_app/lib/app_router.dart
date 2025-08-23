@@ -3,7 +3,7 @@ import 'package:decky_app/views/navigation_shell.dart';
 import 'package:decky_app/views/decks/decks_view.dart';
 import 'package:decky_app/views/decks/deck_detail_view.dart';
 import 'package:decky_app/views/search/find_cards_view.dart';
-import 'package:decky_app/views/collection_view.dart';
+import 'package:decky_app/views/collection/collection_view.dart';
 import 'package:decky_app/views/profile_view.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
@@ -50,10 +50,7 @@ class AppRouter {
     refreshListenable: _AuthStateNotifier.instance,
     routes: [
       GoRoute(path: '/login', builder: (context, state) => const LoginScreen()),
-      GoRoute(
-        path: '/loading', 
-        builder: (context, state) => const _LoadingScreen()
-      ),
+      GoRoute(path: '/loading', builder: (context, state) => const _LoadingScreen()),
       GoRoute(
         path: '/decks/:deckId',
         builder: (context, state) {
@@ -97,12 +94,12 @@ class _AuthStateNotifier extends ChangeNotifier {
 
     try {
       final userController = GetIt.instance<UserController>();
-      
+
       // Listen to auth state changes
       userController.authStateChanges.listen((user) {
         notifyListeners();
       });
-      
+
       // Also listen to account changes
       userController.accountSink.listen((account) {
         notifyListeners();
@@ -125,10 +122,7 @@ class _LoadingScreen extends StatelessWidget {
           children: [
             const CircularProgressIndicator(),
             const SizedBox(height: 24),
-            Text(
-              'common.loading'.tr(),
-              style: Theme.of(context).textTheme.titleMedium,
-            ),
+            Text('common.loading'.tr(), style: Theme.of(context).textTheme.titleMedium),
           ],
         ),
       ),

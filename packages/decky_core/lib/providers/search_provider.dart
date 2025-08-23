@@ -8,10 +8,9 @@ import '../model/search/card_search_result.dart';
 import '../model/search/search_filters.dart';
 import '../model/search/filter_options.dart';
 import '../model/mtg/mtg_card.dart';
+import 'base_search_provider.dart';
 
-enum SearchState { initial, loading, loaded, error }
-
-class SearchProvider extends ChangeNotifier {
+class SearchProvider extends BaseSearchProvider {
   final ElasticsearchService _elasticsearchService;
   final TaskController _taskController = TaskController();
 
@@ -21,26 +20,33 @@ class SearchProvider extends ChangeNotifier {
 
   // State management
   SearchState _state = SearchState.initial;
+  @override
   SearchState get state => _state;
 
   String? _errorMessage;
+  @override
   String get errorMessage => _errorMessage ?? '';
 
   // Search query and filters
   String _query = '';
+  @override
   String get query => _query;
 
   SearchFilters _filters = const SearchFilters();
+  @override
   SearchFilters get filters => _filters;
 
   // Results
   List<CardSearchResult> _results = [];
+  @override
   List<CardSearchResult> get results => _results;
 
   bool _hasMoreResults = true;
+  @override
   bool get hasMoreResults => _hasMoreResults;
 
   int _totalResults = 0;
+  @override
   int get totalResults => _totalResults;
 
   // Pagination
@@ -49,14 +55,17 @@ class SearchProvider extends ChangeNotifier {
 
   // Filter options
   FilterOptions _filterOptions = FilterOptions.empty();
+  @override
   FilterOptions get filterOptions => _filterOptions;
 
   // Autocomplete
   List<String> _autocompleteSuggestions = [];
+  @override
   List<String> get autocompleteSuggestions => _autocompleteSuggestions;
 
   // Recent searches
   List<String> _recentSearches = [];
+  @override
   List<String> get recentSearches => _recentSearches;
 
   // Search history with debouncing
@@ -85,6 +94,7 @@ class SearchProvider extends ChangeNotifier {
     }
   }
 
+  @override
   void updateQuery(String newQuery) {
     if (_query != newQuery) {
       _query = newQuery;
@@ -94,6 +104,7 @@ class SearchProvider extends ChangeNotifier {
     }
   }
 
+  @override
   void updateFilters(SearchFilters newFilters) {
     if (_filters != newFilters) {
       _filters = newFilters;
@@ -102,6 +113,7 @@ class SearchProvider extends ChangeNotifier {
     }
   }
 
+  @override
   void addColorFilter(String color) {
     final colors = List<String>.from(_filters.colors ?? []);
     if (!colors.contains(color)) {
@@ -110,12 +122,14 @@ class SearchProvider extends ChangeNotifier {
     }
   }
 
+  @override
   void removeColorFilter(String color) {
     final colors = List<String>.from(_filters.colors ?? []);
     colors.remove(color);
     updateFilters(_filters.copyWith(colors: colors.isEmpty ? null : colors));
   }
 
+  @override
   void addTypeFilter(String type) {
     final types = List<String>.from(_filters.types ?? []);
     if (!types.contains(type)) {
@@ -124,12 +138,14 @@ class SearchProvider extends ChangeNotifier {
     }
   }
 
+  @override
   void removeTypeFilter(String type) {
     final types = List<String>.from(_filters.types ?? []);
     types.remove(type);
     updateFilters(_filters.copyWith(types: types.isEmpty ? null : types));
   }
 
+  @override
   void addRarityFilter(String rarity) {
     final rarities = List<String>.from(_filters.rarities ?? []);
     if (!rarities.contains(rarity)) {
@@ -138,12 +154,14 @@ class SearchProvider extends ChangeNotifier {
     }
   }
 
+  @override
   void removeRarityFilter(String rarity) {
     final rarities = List<String>.from(_filters.rarities ?? []);
     rarities.remove(rarity);
     updateFilters(_filters.copyWith(rarities: rarities.isEmpty ? null : rarities));
   }
 
+  @override
   void addConvertedManaCostFilter(String manaCost) {
     final manaCosts = List<String>.from(_filters.convertedManaCosts ?? []);
     if (!manaCosts.contains(manaCost)) {
@@ -152,22 +170,26 @@ class SearchProvider extends ChangeNotifier {
     }
   }
 
+  @override
   void removeConvertedManaCostFilter(String manaCost) {
     final manaCosts = List<String>.from(_filters.convertedManaCosts ?? []);
     manaCosts.remove(manaCost);
     updateFilters(_filters.copyWith(convertedManaCosts: manaCosts.isEmpty ? null : manaCosts));
   }
 
+  @override
   void setManaValueRange(double? min, double? max) {
     final range = (min == null && max == null) ? null : RangeFilter(min: min, max: max);
     updateFilters(_filters.copyWith(manaValue: range));
   }
 
+  @override
   void setPriceRange(double? min, double? max) {
     final range = (min == null && max == null) ? null : RangeFilter(min: min, max: max);
     updateFilters(_filters.copyWith(price: range));
   }
 
+  @override
   void setFormatLegality(String format, String? legality) {
     final legalities = Map<String, String>.from(_filters.formatLegalities ?? {});
     if (legality == null) {
@@ -178,19 +200,23 @@ class SearchProvider extends ChangeNotifier {
     updateFilters(_filters.copyWith(formatLegalities: legalities.isEmpty ? null : legalities));
   }
 
+  @override
   void applySortOrder(String sortBy, String sortOrder) {
     updateFilters(_filters.copyWith(sortBy: sortBy, sortOrder: sortOrder));
   }
 
+  @override
   void applyQuickFilter(SearchFilters quickFilters) {
     updateFilters(quickFilters);
   }
 
+  @override
   void clearFilters() {
     _filters = SearchFilters(query: _query.isEmpty ? null : _query);
     _performSearch(reset: true);
   }
 
+  @override
   void clearAll() {
     _query = '';
     _filters = const SearchFilters();
@@ -248,6 +274,7 @@ class SearchProvider extends ChangeNotifier {
     }
   }
 
+  @override
   Future<void> loadMore() async {
     if (!_hasMoreResults || _state == SearchState.loading) return;
 
@@ -255,10 +282,12 @@ class SearchProvider extends ChangeNotifier {
     await _performSearch();
   }
 
+  @override
   Future<void> refresh() async {
     await _performSearch(reset: true);
   }
 
+  @override
   Future<void> loadAutocompleteSuggestions(String query) async {
     if (query.isEmpty) {
       _autocompleteSuggestions.clear();
@@ -288,22 +317,35 @@ class SearchProvider extends ChangeNotifier {
   }
 
   // Utility getters
+  @override
   bool get hasResults => _results.isNotEmpty;
+  @override
   bool get isLoading => _state == SearchState.loading;
+  @override
   bool get hasError => _state == SearchState.error;
+  @override
   bool get isEmpty => _state == SearchState.loaded && _results.isEmpty;
+  @override
   bool get hasActiveFilters => _filters.hasActiveFilters;
 
   // Quick access to common filter states
+  @override
   List<String> get selectedColors => _filters.colors ?? [];
+  @override
   List<String> get selectedTypes => _filters.types ?? [];
+  @override
   List<String> get selectedRarities => _filters.rarities ?? [];
+  @override
   List<String> get selectedConvertedManaCosts => _filters.convertedManaCosts ?? [];
+  @override
   Map<String, String> get selectedFormats => _filters.formatLegalities ?? {};
+  @override
   RangeFilter? get manaValueRange => _filters.manaValue;
+  @override
   RangeFilter? get priceRange => _filters.price;
 
   // Active filter count for UI
+  @override
   int get activeFilterCount {
     int count = 0;
     if (_filters.colors?.isNotEmpty == true) count++;

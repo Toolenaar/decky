@@ -1,6 +1,7 @@
 import 'package:get_it/get_it.dart';
 import 'package:decky_core/controller/user_controller.dart';
 import 'package:decky_core/controller/user_decks_controller.dart';
+import 'package:decky_core/controller/user_collection_controller.dart';
 import 'package:decky_core/controller/elasticsearch_service.dart';
 import 'package:decky_core/providers/search_provider.dart';
 
@@ -26,9 +27,32 @@ Future<void> setupServices() async {
   if (!locator.isRegistered<UserDecksController>()) {
     locator.registerLazySingleton<UserDecksController>(() => UserDecksController());
   }
+
+  // Register UserCollectionController as singleton
+  if (!locator.isRegistered<UserCollectionController>()) {
+    locator.registerLazySingleton<UserCollectionController>(() => UserCollectionController());
+  }
 }
 
-Future<void> initializeControllers() async {}
+Future<void> initializeControllers() async {
+  final userController = locator<UserController>();
+  final userCollectionController = locator<UserCollectionController>();
+  final userDecksController = locator<UserDecksController>();
+  
+  // Initialize collection controller with user's account ID
+  if (userController.account != null) {
+    userCollectionController.initialize(userController.account!.id);
+    userDecksController.initialize(userController.account!.id);
+  }
+  
+  // Listen to user account changes
+  userController.accountSink.stream.listen((account) {
+    if (account != null) {
+      userCollectionController.initialize(account.id);
+      userDecksController.initialize(account.id);
+    }
+  });
+}
 
 void disposeControllers() {
   // Dispose all data controllers on logout

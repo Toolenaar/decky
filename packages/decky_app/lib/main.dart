@@ -22,6 +22,7 @@ void main() async {
   await getIt<UserController>().init();
 
   // Initialize all data controllers
+  await initializeControllers();
 
   // Initialize AuthStateNotifier after services are ready
   AppRouter.initializeAuthNotifier();

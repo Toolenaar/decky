@@ -112,10 +112,46 @@
   "collection": {
     "title": "Mijn Collectie",
     "empty_state": {
-      "title": "Je kaarten collectie",
-      "subtitle": "Scan kaarten om ze toe te voegen"
+      "title": "Je collectie is leeg",
+      "subtitle": "Begin met het toevoegen van kaarten om je collectie op te bouwen"
     },
-    "scan_cards": "Kaarten Scannen"
+    "scan_cards": "Kaarten Scannen",
+    "add_cards": "Kaarten Toevoegen",
+    "total_cards": "Totaal Kaarten:",
+    "total_quantity": "Totaal Hoeveelheid: {count}",
+    "unique_cards": "Unieke Kaarten",
+    "error_loading_cards": "Fout bij laden van collectie kaarten",
+    "view_grid": "Raster Weergave",
+    "view_list": "Lijst Weergave",
+    "search": "Collectie Doorzoeken",
+    "import": "Collectie Importeren",
+    "export": "Collectie Exporteren",
+    "statistics": "Collectie Statistieken",
+    "add_to_collection": "Toevoegen aan Collectie",
+    "in_collection": "In Collectie ({count})",
+    "added_to_collection": "{name} toegevoegd aan collectie",
+    "removed_from_collection": "{name} verwijderd uit collectie",
+    "error_updating": "Fout bij bijwerken van collectie",
+    "quantity": "Hoeveelheid",
+    "update": "Bijwerken",
+    "remove": "Verwijderen",
+    "updated": "Collectie bijgewerkt",
+    "back_to_list": "Terug naar Lijst",
+    "mana_cost": "Mana Kosten",
+    "power_toughness": "Aanval/Verdediging",
+    "set": "Set",
+    "rarity": "Zeldzaamheid",
+    "foil_card": "Foil Kaart",
+    "foil_card_description": "Deze kaart is een foil versie",
+    "notes": "Notities",
+    "remove_from_collection": "Verwijderen uit Collectie",
+    "results_found": "{count} resultaten gevonden",
+    "clear_filters": "Filters Wissen",
+    "clear_all": "Alles Wissen",
+    "no_results": {
+      "title": "Geen kaarten gevonden",
+      "subtitle": "Probeer je zoekopdracht of filters aan te passen"
+    }
   },
   "decks": {
     "title": "Mijn Decks",

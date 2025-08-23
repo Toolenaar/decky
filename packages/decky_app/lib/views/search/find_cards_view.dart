@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 import 'package:decky_core/providers/search_provider.dart';
-import 'package:decky_core/widgets/search/filter_panel.dart';
+
 import 'package:decky_core/model/search/card_search_result.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'search_app_bar.dart';
@@ -84,24 +84,8 @@ class _FindCardsViewState extends State<FindCardsView> {
     return Column(
       children: [
         // Search bar
-        SearchField(searchProvider: searchProvider, showFilters: _showFilters, onToggleFilters: _toggleFilters),
+        SearchField(searchProvider: searchProvider),
 
-        // Collapsible filter panel
-        AnimatedSize(
-          duration: const Duration(milliseconds: 300),
-          curve: Curves.easeInOut,
-          child: _showFilters
-              ? Container(
-                  margin: const EdgeInsets.symmetric(horizontal: 16),
-                  decoration: BoxDecoration(
-                    color: Colors.grey[50],
-                    borderRadius: BorderRadius.circular(12),
-                    border: Border.all(color: Colors.grey[200]!),
-                  ),
-                  child: CompactFilterPanel(searchProvider: searchProvider),
-                )
-              : const SizedBox.shrink(),
-        ),
         // Active filter chips
         ListenableBuilder(
           listenable: searchProvider,

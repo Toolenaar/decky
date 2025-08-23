@@ -112,10 +112,46 @@
   "collection": {
     "title": "My Collection",
     "empty_state": {
-      "title": "Your card collection",
-      "subtitle": "Scan cards to add them"
+      "title": "Your collection is empty",
+      "subtitle": "Start adding cards to build your collection"
     },
-    "scan_cards": "Scan Cards"
+    "scan_cards": "Scan Cards",
+    "add_cards": "Add Cards",
+    "total_cards": "Total Cards:",
+    "total_quantity": "Total Quantity: {count}",
+    "unique_cards": "Unique Cards",
+    "error_loading_cards": "Error loading collection cards",
+    "view_grid": "Grid View",
+    "view_list": "List View",
+    "search": "Search Collection",
+    "import": "Import Collection",
+    "export": "Export Collection",
+    "statistics": "Collection Statistics",
+    "add_to_collection": "Add to Collection",
+    "in_collection": "In Collection ({count})",
+    "added_to_collection": "{name} added to collection",
+    "removed_from_collection": "{name} removed from collection",
+    "error_updating": "Error updating collection",
+    "quantity": "Quantity",
+    "update": "Update",
+    "remove": "Remove",
+    "updated": "Collection updated",
+    "back_to_list": "Back to List",
+    "mana_cost": "Mana Cost",
+    "power_toughness": "Power/Toughness",
+    "set": "Set",
+    "rarity": "Rarity",
+    "foil_card": "Foil Card",
+    "foil_card_description": "This card is a foil version",
+    "notes": "Notes",
+    "remove_from_collection": "Remove from Collection",
+    "results_found": "{count} results found",
+    "clear_filters": "Clear Filters",
+    "clear_all": "Clear All",
+    "no_results": {
+      "title": "No cards found",
+      "subtitle": "Try adjusting your search or filters"
+    }
   },
   "decks": {
     "title": "My Decks",
@@ -197,11 +233,7 @@
       "quantity": "Quantity",
       "move_to_mainboard": "Move to Mainboard",
       "move_to_sideboard": "Move to Sideboard",
-      "delete_card": "Delete Card",
-      "actions": "Actions",
-      "more_actions": "More Actions",
-      "search_to_add_cards": "Search for cards to add them to your deck",
-      "error_loading_cards": "Error loading cards"
+      "delete_card": "Delete Card"
     },
     "selector": {
       "no_decks": "No decks available",
