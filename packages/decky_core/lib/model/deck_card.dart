@@ -1,6 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:decky_core/decky_core.dart';
+import 'base_model.dart';
 
-class DeckCard {
+class DeckCard extends BaseModel {
   final String cardUuid;
   final int count;
   final bool isFoil;
@@ -11,8 +13,12 @@ class DeckCard {
   final List<String>? tags;
   final bool isCommander;
   final bool isInSideboard;
+  final String accountId;
+  final String deckId;
+  final MtgCard mtgCardReference;
 
   DeckCard({
+    required super.id,
     required this.cardUuid,
     required this.count,
     this.isFoil = false,
@@ -23,10 +29,17 @@ class DeckCard {
     this.tags,
     this.isCommander = false,
     this.isInSideboard = false,
+    required this.accountId,
+    required this.deckId,
+    required this.mtgCardReference,
   });
 
-  factory DeckCard.fromJson(Map<String, dynamic> json) {
+  factory DeckCard.fromJson(Map<String, dynamic> json, String id) {
+    // Handle the case where mtgCardReference might be null or missing
+    MtgCard mtgCardReference = MtgCard.fromJson(json['mtgCardReference'], json['mtgCardReference']['id']);
+
     return DeckCard(
+      id: id,
       cardUuid: json['cardUuid'],
       count: json['count'],
       isFoil: json['isFoil'] ?? false,
@@ -37,9 +50,13 @@ class DeckCard {
       tags: json['tags'] != null ? List<String>.from(json['tags']) : null,
       isCommander: json['isCommander'] ?? false,
       isInSideboard: json['isInSideboard'] ?? false,
+      accountId: json['accountId'],
+      deckId: json['deckId'],
+      mtgCardReference: mtgCardReference,
     );
   }
 
+  @override
   Map<String, dynamic> toJson() {
     return {
       'cardUuid': cardUuid,
@@ -52,6 +69,9 @@ class DeckCard {
       if (tags != null) 'tags': tags,
       'isCommander': isCommander,
       'isInSideboard': isInSideboard,
+      'accountId': accountId,
+      'deckId': deckId,
+      'mtgCardReference': mtgCardReference.toJson(),
     };
   }
 
@@ -66,8 +86,12 @@ class DeckCard {
     List<String>? tags,
     bool? isCommander,
     bool? isInSideboard,
+    String? accountId,
+    String? deckId,
+    MtgCard? mtgCardReference,
   }) {
     return DeckCard(
+      id: id,
       cardUuid: cardUuid ?? this.cardUuid,
       count: count ?? this.count,
       isFoil: isFoil ?? this.isFoil,
@@ -78,6 +102,18 @@ class DeckCard {
       tags: tags ?? this.tags,
       isCommander: isCommander ?? this.isCommander,
       isInSideboard: isInSideboard ?? this.isInSideboard,
+      accountId: accountId ?? this.accountId,
+      deckId: deckId ?? this.deckId,
+      mtgCardReference: mtgCardReference ?? this.mtgCardReference,
     );
   }
+
+  @override
+  DocumentReference<Map<String, dynamic>> get ref => FirebaseFirestore.instance
+      .collection('accounts')
+      .doc(accountId)
+      .collection('decks')
+      .doc(deckId)
+      .collection('cards')
+      .doc(id);
 }

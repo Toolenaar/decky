@@ -3,10 +3,33 @@ import 'package:flutter/material.dart';
 import 'package:decky_core/providers/search_provider.dart';
 import 'package:decky_core/widgets/rarity_icon.dart';
 
-class ActiveFilterChips extends StatelessWidget {
+class ActiveFilterChips extends StatefulWidget {
   final SearchProvider searchProvider;
 
   const ActiveFilterChips({super.key, required this.searchProvider});
+
+  @override
+  State<ActiveFilterChips> createState() => _ActiveFilterChipsState();
+}
+
+class _ActiveFilterChipsState extends State<ActiveFilterChips> {
+  @override
+  void initState() {
+    super.initState();
+    widget.searchProvider.addListener(_onSearchProviderChanged);
+  }
+
+  @override
+  void dispose() {
+    widget.searchProvider.removeListener(_onSearchProviderChanged);
+    super.dispose();
+  }
+
+  void _onSearchProviderChanged() {
+    if (mounted) {
+      setState(() {});
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -20,10 +43,13 @@ class ActiveFilterChips extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.center, // Center vertically
             children: [
               // Color filters section
-              _ColorFiltersSection(searchProvider: searchProvider),
+              _ColorFiltersSection(searchProvider: widget.searchProvider),
+              const SizedBox(width: 16),
+              // Mana cost filters section
+              _ManaCostFiltersSection(searchProvider: widget.searchProvider),
               const SizedBox(width: 16),
               // Rarity filters section
-              _RarityFiltersSection(searchProvider: searchProvider),
+              _RarityFiltersSection(searchProvider: widget.searchProvider),
               const SizedBox(width: 16),
               // Clear filters button with badge
               // if (searchProvider.hasActiveFilters) _ClearFiltersButton(searchProvider: searchProvider),
@@ -104,11 +130,11 @@ class _ColorFilterButton extends StatelessWidget {
         width: 32, // Match rarity button width
         height: 32, // Match rarity button height
         decoration: BoxDecoration(
-          color: baseColor.withOpacity(isSelected ? 0.8 : 0.3),
+          color: baseColor.withValues(alpha: isSelected ? 0.8 : 0.3),
           shape: BoxShape.circle,
           border: Border.all(color: baseColor, width: 2), // Match rarity button border width
           boxShadow: isSelected
-              ? [BoxShadow(color: baseColor.withOpacity(0.3), blurRadius: 4, offset: const Offset(0, 2))]
+              ? [BoxShadow(color: baseColor.withValues(alpha: 0.3), blurRadius: 4, offset: const Offset(0, 2))]
               : null,
         ),
         child: Center(
@@ -188,18 +214,117 @@ class _RarityFilterButton extends StatelessWidget {
         width: 32, // Fixed width
         height: 32, // Fixed height
         decoration: BoxDecoration(
-          color: isSelected ? _getRarityColor(rarity).withOpacity(0.2) : Colors.transparent,
+          color: isSelected ? _getRarityColor(rarity).withValues(alpha: 0.2) : Colors.transparent,
           border: Border.all(
-            color: isSelected ? _getRarityColor(rarity) : Colors.grey.withOpacity(0.3),
+            color: isSelected ? _getRarityColor(rarity) : Colors.grey.withValues(alpha: 0.3),
             width: 2, // Always use same border width
           ),
           borderRadius: BorderRadius.circular(8),
           boxShadow: isSelected
-              ? [BoxShadow(color: _getRarityColor(rarity).withOpacity(0.3), blurRadius: 4, offset: const Offset(0, 2))]
+              ? [BoxShadow(color: _getRarityColor(rarity).withValues(alpha: 0.3), blurRadius: 4, offset: const Offset(0, 2))]
               : null,
         ),
         child: Center(
           child: RarityIcon(rarity: rarity, size: 18, isSelected: isSelected),
+        ),
+      ),
+    );
+  }
+}
+
+class _ManaCostFiltersSection extends StatelessWidget {
+  final SearchProvider searchProvider;
+
+  const _ManaCostFiltersSection({required this.searchProvider});
+
+  @override
+  Widget build(BuildContext context) {
+    // Define the mana cost options
+    final manaCostOptions = ['1-', '2', '3', '4', '5', '6+'];
+
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: [
+        Text('Mana:', style: Theme.of(context).textTheme.labelMedium?.copyWith(fontWeight: FontWeight.w600)),
+        const SizedBox(width: 8),
+        ...manaCostOptions.map((manaCost) {
+          return _ManaCostFilterButton(
+            manaCost: manaCost,
+            isSelected: searchProvider.selectedConvertedManaCosts.contains(manaCost),
+            onTap: () {
+              if (searchProvider.selectedConvertedManaCosts.contains(manaCost)) {
+                searchProvider.removeConvertedManaCostFilter(manaCost);
+              } else {
+                searchProvider.addConvertedManaCostFilter(manaCost);
+              }
+            },
+          );
+        }),
+      ],
+    );
+  }
+}
+
+class _ManaCostFilterButton extends StatelessWidget {
+  final String manaCost;
+  final bool isSelected;
+  final VoidCallback onTap;
+
+  const _ManaCostFilterButton({
+    required this.manaCost,
+    required this.isSelected,
+    required this.onTap,
+  });
+
+  Color _getManaCostColor(String manaCost) {
+    switch (manaCost) {
+      case '1-':
+        return Colors.grey[600]!;
+      case '2':
+        return Colors.blue[400]!;
+      case '3':
+        return Colors.green[500]!;
+      case '4':
+        return Colors.orange[500]!;
+      case '5':
+        return Colors.red[500]!;
+      case '6+':
+        return Colors.purple[600]!;
+      default:
+        return Colors.grey[600]!;
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final color = _getManaCostColor(manaCost);
+
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        margin: const EdgeInsets.only(right: 6),
+        width: 32,
+        height: 32,
+        decoration: BoxDecoration(
+          color: isSelected ? color.withValues(alpha: 0.2) : Colors.transparent,
+          border: Border.all(
+            color: isSelected ? color : Colors.grey.withValues(alpha: 0.3),
+            width: 2,
+          ),
+          borderRadius: BorderRadius.circular(8),
+          boxShadow: isSelected
+              ? [BoxShadow(color: color.withValues(alpha: 0.3), blurRadius: 4, offset: const Offset(0, 2))]
+              : null,
+        ),
+        child: Center(
+          child: Text(
+            manaCost,
+            style: TextStyle(
+              color: isSelected ? color : Colors.grey[700],
+              fontSize: 11,
+              fontWeight: isSelected ? FontWeight.bold : FontWeight.w600,
+            ),
+          ),
         ),
       ),
     );

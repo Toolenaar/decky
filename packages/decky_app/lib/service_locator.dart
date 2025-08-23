@@ -1,5 +1,6 @@
 import 'package:get_it/get_it.dart';
 import 'package:decky_core/controller/user_controller.dart';
+import 'package:decky_core/controller/user_decks_controller.dart';
 import 'package:decky_core/controller/elasticsearch_service.dart';
 import 'package:decky_core/providers/search_provider.dart';
 
@@ -19,6 +20,11 @@ Future<void> setupServices() async {
   // Register SearchProvider as singleton
   if (!locator.isRegistered<SearchProvider>()) {
     locator.registerLazySingleton<SearchProvider>(() => SearchProvider(locator<ElasticsearchService>()));
+  }
+
+  // Register UserDecksController as singleton
+  if (!locator.isRegistered<UserDecksController>()) {
+    locator.registerLazySingleton<UserDecksController>(() => UserDecksController());
   }
 }
 

@@ -104,7 +104,7 @@ class BulkImageImportService {
     return snapshot.docs.map((doc) {
       final data = doc.data() as Map<String, dynamic>;
       data['uuid'] = doc.id;
-      return MtgCard.fromJson(data);
+      return MtgCard.fromJson(data, doc.id);
     }).toList();
   }
 

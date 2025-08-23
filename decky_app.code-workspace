@@ -1,0 +1,11 @@
+{
+	"folders": [
+		{
+			"path": "packages/decky_app"
+		},
+		{
+			"path": "packages/decky_core"
+		}
+	],
+	"settings": {}
+}

@@ -120,7 +120,96 @@
   "decks": {
     "title": "My Decks",
     "empty_state": {
-      "title": "Your deck collection"
+      "title": "No decks yet",
+      "subtitle": "Create your first deck to start building your collection"
+    },
+    "new_deck": "New Deck",
+    "create_first_deck": "Create Your First Deck",
+    "open": "Open",
+    "card": "card",
+    "cards": "cards",
+    "template": "Template",
+    "created_success": "Deck \"{name}\" created successfully",
+    "error": {
+      "loading": "Failed to load decks",
+      "create": "Failed to create deck: {error}"
+    },
+    "sort": {
+      "name": "Sort by Name",
+      "date": "Sort by Date",
+      "format": "Sort by Format",
+      "coming_soon": "Sorting feature coming soon"
+    },
+    "create_deck": {
+      "title": "Create New Deck",
+      "name_label": "Deck Name",
+      "name_hint": "Enter a name for your deck",
+      "name_required": "Deck name is required",
+      "name_too_short": "Deck name must be at least 3 characters",
+      "name_too_long": "Deck name must be less than 50 characters",
+      "format_label": "Format",
+      "create_button": "Create Deck"
+    },
+    "formats": {
+      "commander_desc": "100-card singleton format with legendary commander",
+      "standard_desc": "Rotating format with cards from recent sets",
+      "modern_desc": "Non-rotating format from 8th Edition forward",
+      "pioneer_desc": "Non-rotating format from Return to Ravnica forward",
+      "legacy_desc": "All cards except banned list",
+      "vintage_desc": "All cards with restricted list",
+      "pauper_desc": "Common cards only",
+      "limited_desc": "Sealed or draft format"
+    },
+    "detail": {
+      "loading": "Loading deck...",
+      "edit": "Edit",
+      "share": "Share",
+      "duplicate": "Duplicate",
+      "export": "Export",
+      "delete": "Delete",
+      "add_cards": "Add Cards",
+      "add_to_deck": "Add to Deck",
+      "add_more": "Add More",
+      "no_cards": "No cards in this deck yet",
+      "add_cards_hint": "Start adding cards to build your deck",
+      "search_to_add_cards": "Search for cards to add them to your deck",
+      "search_hint": "Search for cards to add...",
+      "template": "Template",
+      "stats": "Deck Statistics",
+      "actions": "Actions",
+      "more_actions": "More Actions",
+      "total_cards": "Total Cards",
+      "mainboard": "Mainboard",
+      "sideboard": "Sideboard",
+      "commander": "Commander",
+      "estimated_value": "Estimated Value",
+      "error_loading_cards": "Error loading cards",
+      "error_adding_card": "Error adding card to deck",
+      "edit_coming_soon": "Edit feature coming soon",
+      "share_coming_soon": "Share feature coming soon",
+      "add_cards_coming_soon": "Add cards feature coming soon",
+      "duplicate_coming_soon": "Duplicate feature coming soon",
+      "export_coming_soon": "Export feature coming soon",
+      "delete_confirm_title": "Delete Deck",
+      "delete_confirm_message": "Are you sure you want to delete \"{name}\"? This action cannot be undone.",
+      "mana_cost": "Mana Cost",
+      "power_toughness": "Power/Toughness",
+      "quantity": "Quantity",
+      "move_to_mainboard": "Move to Mainboard",
+      "move_to_sideboard": "Move to Sideboard",
+      "delete_card": "Delete Card",
+      "actions": "Actions",
+      "more_actions": "More Actions",
+      "search_to_add_cards": "Search for cards to add them to your deck",
+      "error_loading_cards": "Error loading cards"
+    },
+    "selector": {
+      "no_decks": "No decks available",
+      "select_deck": "Select a Deck",
+      "choose_deck": "Choose Deck",
+      "switch_deck": "Switch Deck",
+      "current_deck": "Current deck",
+      "card_count": "{count} cards"
     }
   },
   "cards": {

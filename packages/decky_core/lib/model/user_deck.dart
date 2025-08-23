@@ -20,60 +20,50 @@ enum MtgFormat {
   standardBrawl,
   limited,
   cube,
-  custom
+  custom,
 }
 
 class UserDeck extends BaseModel {
   final String accountId;
   final String name;
   final MtgFormat format;
-  final List<DeckCard> cards;
   final DeckMetadata metadata;
   final String? parentDeckId;
   final bool isTemplate;
   final Map<String, dynamic>? aiSuggestions;
   final double? estimatedValue;
   final String? notes;
+  final String? coverImageUrl;
 
   UserDeck({
     required super.id,
     required this.accountId,
     required this.name,
     required this.format,
-    required this.cards,
     required this.metadata,
     this.parentDeckId,
     this.isTemplate = false,
     this.aiSuggestions,
     this.estimatedValue,
     this.notes,
+    this.coverImageUrl,
   });
 
   @override
   DocumentReference<Map<String, dynamic>> get ref =>
-      FirebaseFirestore.instance
-          .collection('accounts')
-          .doc(accountId)
-          .collection('decks')
-          .doc(id);
+      FirebaseFirestore.instance.collection('accounts').doc(accountId).collection('decks').doc(id);
 
-  DocumentReference<Map<String, dynamic>> get deckCardsRef =>
-      FirebaseFirestore.instance.collection('decks').doc(id);
+  DocumentReference<Map<String, dynamic>> get deckCardsRef => FirebaseFirestore.instance.collection('decks').doc(id);
 
-  List<DeckCard> get commanders =>
-      cards.where((card) => card.isCommander).toList();
+  // List<DeckCard> get commanders => cards.where((card) => card.isCommander).toList();
 
-  List<DeckCard> get mainboard =>
-      cards.where((card) => !card.isCommander && !card.isInSideboard).toList();
+  // List<DeckCard> get mainboard => cards.where((card) => !card.isCommander && !card.isInSideboard).toList();
 
-  List<DeckCard> get sideboard =>
-      cards.where((card) => card.isInSideboard).toList();
+  // List<DeckCard> get sideboard => cards.where((card) => card.isInSideboard).toList();
 
-  int get totalCards =>
-      cards.fold(0, (total, card) => total + (card.isInSideboard ? 0 : card.count));
+  // int get totalCards => cards.fold(0, (total, card) => total + (card.isInSideboard ? 0 : card.count));
 
-  int get sideboardCount =>
-      cards.fold(0, (total, card) => total + (card.isInSideboard ? card.count : 0));
+  // int get sideboardCount => cards.fold(0, (total, card) => total + (card.isInSideboard ? card.count : 0));
 
   bool get isCommanderFormat =>
       format == MtgFormat.commander ||
@@ -82,33 +72,33 @@ class UserDeck extends BaseModel {
       format == MtgFormat.brawl ||
       format == MtgFormat.standardBrawl;
 
-  bool get isValidForFormat {
-    switch (format) {
-      case MtgFormat.commander:
-      case MtgFormat.pauperCommander:
-      case MtgFormat.brawl:
-      case MtgFormat.standardBrawl:
-        return commanders.isNotEmpty && commanders.length <= 2 && totalCards == 100;
-      case MtgFormat.commanderOnehundred:
-        return commanders.length == 1 && totalCards == 100;
-      case MtgFormat.standard:
-      case MtgFormat.pioneer:
-      case MtgFormat.modern:
-      case MtgFormat.legacy:
-      case MtgFormat.vintage:
-      case MtgFormat.historic:
-      case MtgFormat.alchemy:
-      case MtgFormat.explorer:
-        return totalCards >= 60 && sideboardCount <= 15;
-      case MtgFormat.pauper:
-        return totalCards >= 60 && sideboardCount <= 15;
-      case MtgFormat.limited:
-        return totalCards >= 40;
-      case MtgFormat.cube:
-      case MtgFormat.custom:
-        return true;
-    }
-  }
+  // bool get isValidForFormat {
+  //   switch (format) {
+  //     case MtgFormat.commander:
+  //     case MtgFormat.pauperCommander:
+  //     case MtgFormat.brawl:
+  //     case MtgFormat.standardBrawl:
+  //       return commanders.isNotEmpty && commanders.length <= 2 && totalCards == 100;
+  //     case MtgFormat.commanderOnehundred:
+  //       return commanders.length == 1 && totalCards == 100;
+  //     case MtgFormat.standard:
+  //     case MtgFormat.pioneer:
+  //     case MtgFormat.modern:
+  //     case MtgFormat.legacy:
+  //     case MtgFormat.vintage:
+  //     case MtgFormat.historic:
+  //     case MtgFormat.alchemy:
+  //     case MtgFormat.explorer:
+  //       return totalCards >= 60 && sideboardCount <= 15;
+  //     case MtgFormat.pauper:
+  //       return totalCards >= 60 && sideboardCount <= 15;
+  //     case MtgFormat.limited:
+  //       return totalCards >= 40;
+  //     case MtgFormat.cube:
+  //     case MtgFormat.custom:
+  //       return true;
+  //   }
+  // }
 
   @override
   Map<String, dynamic> toJson() {
@@ -116,13 +106,13 @@ class UserDeck extends BaseModel {
       'accountId': accountId,
       'name': name,
       'format': format.toString().split('.').last,
-      'cards': cards.map((card) => card.toJson()).toList(),
       'metadata': metadata.toJson(),
       if (parentDeckId != null) 'parentDeckId': parentDeckId,
       'isTemplate': isTemplate,
       if (aiSuggestions != null) 'aiSuggestions': aiSuggestions,
       if (estimatedValue != null) 'estimatedValue': estimatedValue,
       if (notes != null) 'notes': notes,
+      if (coverImageUrl != null) 'coverImageUrl': coverImageUrl,
     };
   }
 
@@ -135,17 +125,13 @@ class UserDeck extends BaseModel {
         (e) => e.toString().split('.').last == json['format'],
         orElse: () => MtgFormat.custom,
       ),
-      cards: (json['cards'] as List? ?? [])
-          .map((card) => DeckCard.fromJson(card))
-          .toList(),
       metadata: DeckMetadata.fromJson(json['metadata'] ?? {}),
       parentDeckId: json['parentDeckId'],
       isTemplate: json['isTemplate'] ?? false,
-      aiSuggestions: json['aiSuggestions'] != null
-          ? Map<String, dynamic>.from(json['aiSuggestions'])
-          : null,
+      aiSuggestions: json['aiSuggestions'] != null ? Map<String, dynamic>.from(json['aiSuggestions']) : null,
       estimatedValue: json['estimatedValue']?.toDouble(),
       notes: json['notes'],
+      coverImageUrl: json['coverImageUrl'],
     );
   }
 
@@ -159,46 +145,21 @@ class UserDeck extends BaseModel {
     Map<String, dynamic>? aiSuggestions,
     double? estimatedValue,
     String? notes,
+    String? coverImageUrl,
   }) {
     return UserDeck(
       id: id,
       accountId: accountId,
       name: name ?? this.name,
       format: format ?? this.format,
-      cards: cards ?? this.cards,
+
       metadata: metadata ?? this.metadata,
       parentDeckId: parentDeckId ?? this.parentDeckId,
       isTemplate: isTemplate ?? this.isTemplate,
       aiSuggestions: aiSuggestions ?? this.aiSuggestions,
       estimatedValue: estimatedValue ?? this.estimatedValue,
       notes: notes ?? this.notes,
+      coverImageUrl: coverImageUrl ?? this.coverImageUrl,
     );
-  }
-
-  Future<void> saveCardCopies() async {
-    final batch = FirebaseFirestore.instance.batch();
-    final deckCardsCollection = deckCardsRef.collection('cards');
-
-    for (final deckCard in cards) {
-      final cardRef = deckCardsCollection.doc(deckCard.cardUuid);
-      batch.set(cardRef, {
-        'deckCardData': deckCard.toJson(),
-        'createdAt': Timestamp.now(),
-      });
-    }
-
-    await batch.commit();
-  }
-
-  Future<void> removeCardCopies() async {
-    final deckCardsCollection = deckCardsRef.collection('cards');
-    final snapshot = await deckCardsCollection.get();
-    
-    final batch = FirebaseFirestore.instance.batch();
-    for (final doc in snapshot.docs) {
-      batch.delete(doc.reference);
-    }
-    
-    await batch.commit();
   }
 }

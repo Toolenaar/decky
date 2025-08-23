@@ -120,7 +120,80 @@
   "decks": {
     "title": "Mijn Decks",
     "empty_state": {
-      "title": "Je deck collectie"
+      "title": "Nog geen decks",
+      "subtitle": "Maak je eerste deck om je verzameling te starten"
+    },
+    "new_deck": "Nieuw Deck",
+    "create_first_deck": "Maak Je Eerste Deck",
+    "open": "Openen",
+    "card": "kaart",
+    "cards": "kaarten",
+    "template": "Sjabloon",
+    "created_success": "Deck \"{name}\" succesvol aangemaakt",
+    "error": {
+      "loading": "Kan decks niet laden",
+      "create": "Kan deck niet aanmaken: {error}"
+    },
+    "sort": {
+      "name": "Sorteer op Naam",
+      "date": "Sorteer op Datum",
+      "format": "Sorteer op Format",
+      "coming_soon": "Sorteerfunctie komt binnenkort"
+    },
+    "create_deck": {
+      "title": "Nieuw Deck Maken",
+      "name_label": "Deck Naam",
+      "name_hint": "Voer een naam in voor je deck",
+      "name_required": "Deck naam is vereist",
+      "name_too_short": "Deck naam moet minimaal 3 tekens zijn",
+      "name_too_long": "Deck naam moet minder dan 50 tekens zijn",
+      "format_label": "Format",
+      "create_button": "Deck Aanmaken"
+    },
+    "formats": {
+      "commander_desc": "100-kaarten singleton format met legendary commander",
+      "standard_desc": "Roterend format met kaarten uit recente sets",
+      "modern_desc": "Niet-roterend format vanaf 8th Edition",
+      "pioneer_desc": "Niet-roterend format vanaf Return to Ravnica",
+      "legacy_desc": "Alle kaarten behalve banned lijst",
+      "vintage_desc": "Alle kaarten met restricted lijst",
+      "pauper_desc": "Alleen common kaarten",
+      "limited_desc": "Sealed of draft format"
+    },
+    "detail": {
+      "loading": "Deck laden...",
+      "edit": "Bewerken",
+      "share": "Delen",
+      "duplicate": "Dupliceren",
+      "export": "Exporteren",
+      "delete": "Verwijderen",
+      "add_cards": "Kaarten Toevoegen",
+      "no_cards": "Nog geen kaarten in dit deck",
+      "add_cards_hint": "Begin met het toevoegen van kaarten om je deck te bouwen",
+      "template": "Sjabloon",
+      "stats": "Deck Statistieken",
+      "total_cards": "Totaal Kaarten",
+      "mainboard": "Mainboard",
+      "sideboard": "Sideboard",
+      "commander": "Commander",
+      "estimated_value": "Geschatte Waarde",
+      "edit_coming_soon": "Bewerkfunctie komt binnenkort",
+      "share_coming_soon": "Deelfunctie komt binnenkort",
+      "add_cards_coming_soon": "Kaarten toevoegen functie komt binnenkort",
+      "duplicate_coming_soon": "Dupliceerfunctie komt binnenkort",
+      "export_coming_soon": "Exportfunctie komt binnenkort",
+      "delete_confirm_title": "Deck Verwijderen",
+      "delete_confirm_message": "Weet je zeker dat je \"{name}\" wilt verwijderen? Deze actie kan niet ongedaan worden gemaakt.",
+      "mana_cost": "Mana Kosten",
+      "power_toughness": "Aanval/Verdediging",
+      "quantity": "Aantal",
+      "move_to_mainboard": "Verplaats naar Mainboard",
+      "move_to_sideboard": "Verplaats naar Sideboard",
+      "delete_card": "Kaart Verwijderen",
+      "actions": "Acties",
+      "more_actions": "Meer Acties",
+      "search_to_add_cards": "Zoek naar kaarten om ze aan je deck toe te voegen",
+      "error_loading_cards": "Fout bij het laden van kaarten"
     }
   },
   "cards": {

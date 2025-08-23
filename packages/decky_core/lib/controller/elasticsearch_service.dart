@@ -492,6 +492,61 @@ class ElasticsearchService {
       });
     }
 
+    // Converted Mana Costs (discrete values: 1-, 2, 3, 4, 5, 6+)
+    if (filters.convertedManaCosts?.isNotEmpty == true) {
+      final shouldQueries = <Map<String, dynamic>>[];
+      
+      for (final manaCost in filters.convertedManaCosts!) {
+        switch (manaCost) {
+          case '1-':
+            // Filter for mana cost 0 or 1
+            shouldQueries.add({
+              'range': {
+                'converted_mana_cost': {'lte': 1}
+              }
+            });
+            break;
+          case '2':
+            shouldQueries.add({
+              'term': {'converted_mana_cost': 2}
+            });
+            break;
+          case '3':
+            shouldQueries.add({
+              'term': {'converted_mana_cost': 3}
+            });
+            break;
+          case '4':
+            shouldQueries.add({
+              'term': {'converted_mana_cost': 4}
+            });
+            break;
+          case '5':
+            shouldQueries.add({
+              'term': {'converted_mana_cost': 5}
+            });
+            break;
+          case '6+':
+            // Filter for mana cost 6 or higher
+            shouldQueries.add({
+              'range': {
+                'converted_mana_cost': {'gte': 6}
+              }
+            });
+            break;
+        }
+      }
+      
+      if (shouldQueries.isNotEmpty) {
+        filter.add({
+          'bool': {
+            'should': shouldQueries,
+            'minimum_should_match': 1,
+          }
+        });
+      }
+    }
+
     // Power Range
     if (filters.power?.hasValue == true) {
       final rangeQuery = <String, dynamic>{};

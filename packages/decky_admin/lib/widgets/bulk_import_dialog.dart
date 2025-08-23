@@ -186,7 +186,7 @@ class _BulkImportDialogState extends State<BulkImportDialog> {
         if (imageDataStatus != 'synced' || firebaseImageUris == null || scryfallData == null || importError == null) {
           try {
             data['uuid'] = doc.id;
-            final card = MtgCard.fromJson(data);
+            final card = MtgCard.fromJson(data, doc.id);
             unprocessedCards.add(card);
             print(
               '📝 Added unprocessed card: ${card.name} - status: $imageDataStatus, scryfallData: ${scryfallData != null ? 'present' : 'missing'}',

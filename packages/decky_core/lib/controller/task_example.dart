@@ -27,17 +27,14 @@ class TaskExample {
 
   Future<void> _demonstrateCardUpdateCheck() async {
     // Fetch a few cards from the database
-    final cardsQuery = await _firestore
-        .collection('cards')
-        .limit(3)
-        .get();
+    final cardsQuery = await _firestore.collection('cards').limit(3).get();
 
     for (final doc in cardsQuery.docs) {
       try {
-        final card = MtgCard.fromJson({...doc.data(), 'uuid': doc.id});
+        final card = MtgCard.fromJson({...doc.data(), 'uuid': doc.id}, doc.id);
         final needsUpdate = await _taskController.shouldUpdateCard(card);
         final reason = await _taskController.determineUpdateReason(card);
-        
+
         print('  Card: ${card.name}');
         print('    Needs Update: $needsUpdate');
         print('    Reason: $reason');
@@ -54,16 +51,16 @@ class TaskExample {
   Future<void> _demonstrateTaskCreation() async {
     // Create a sample task for a card that needs updating
     const sampleCardId = 'sample-card-id';
-    
+
     print('  Creating task for card: $sampleCardId');
-    
+
     try {
       final task = await _taskController.createCardUpdateTask(
         sampleCardId,
         reason: 'demo_task',
         skipImageDownload: false,
       );
-      
+
       if (task != null) {
         print('    ✅ Task created successfully: ${task.id}');
         print('    Task Type: ${task.taskType.name}');
@@ -80,10 +77,10 @@ class TaskExample {
   Future<void> _demonstrateTaskMonitoring() async {
     // Show pending tasks
     print('  Fetching pending tasks...');
-    
+
     try {
       final pendingTasks = await _taskController.getPendingTasks(limit: 5);
-      
+
       if (pendingTasks.isEmpty) {
         print('    No pending tasks found');
       } else {
@@ -105,19 +102,18 @@ class TaskExample {
   Future<void> simulateTaskProcessing(String taskId) async {
     print('\n=== Simulating Task Processing ===');
     print('Processing task: $taskId');
-    
+
     try {
       // Simulate task progression
       await _taskController.updateTaskStatus(taskId, TaskStatus.processing);
       print('  ✅ Task marked as processing');
-      
+
       // Simulate some work (in real system, this would be done by Firebase Function)
       await Future.delayed(const Duration(seconds: 2));
-      
+
       // Mark as completed
       await _taskController.updateTaskStatus(taskId, TaskStatus.completed);
       print('  ✅ Task marked as completed');
-      
     } catch (e) {
       print('  ❌ Error processing task: $e');
     }
@@ -125,12 +121,10 @@ class TaskExample {
 
   Future<void> cleanupDemo() async {
     print('\n=== Cleaning up demo tasks ===');
-    
+
     try {
       // Clean up any demo tasks
-      await _taskController.deleteCompletedTasks(
-        olderThan: DateTime.now().subtract(const Duration(minutes: 1))
-      );
+      await _taskController.deleteCompletedTasks(olderThan: DateTime.now().subtract(const Duration(minutes: 1)));
       print('  ✅ Demo cleanup completed');
     } catch (e) {
       print('  ❌ Error during cleanup: $e');

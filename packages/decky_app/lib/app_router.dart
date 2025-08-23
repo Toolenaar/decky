@@ -1,6 +1,7 @@
 import 'package:decky_app/views/login_screen.dart';
 import 'package:decky_app/views/navigation_shell.dart';
-import 'package:decky_app/views/decks_view.dart';
+import 'package:decky_app/views/decks/decks_view.dart';
+import 'package:decky_app/views/decks/deck_detail_view.dart';
 import 'package:decky_app/views/search/find_cards_view.dart';
 import 'package:decky_app/views/collection_view.dart';
 import 'package:decky_app/views/profile_view.dart';
@@ -8,6 +9,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:get_it/get_it.dart';
 import 'package:decky_core/controller/user_controller.dart';
+import 'package:easy_localization/easy_localization.dart';
 
 class AppRouter {
   static void initializeAuthNotifier() {
@@ -20,13 +22,22 @@ class AppRouter {
       try {
         final userController = GetIt.instance<UserController>();
         final isLoggedIn = userController.currentUser != null;
+        final hasAccount = userController.account != null;
         final isLoginRoute = state.matchedLocation == '/login';
+        final isLoadingRoute = state.matchedLocation == '/loading';
 
-        if (!isLoggedIn && !isLoginRoute) {
+        // If user is logged in but account not loaded yet, show loading
+        if (isLoggedIn && !hasAccount && !isLoadingRoute) {
+          return '/loading';
+        }
+
+        // If not logged in and not on login page, redirect to login
+        if (!isLoggedIn && !isLoginRoute && !isLoadingRoute) {
           return '/login';
         }
 
-        if (isLoggedIn && isLoginRoute) {
+        // If logged in with account and on login or loading page, go to decks
+        if (isLoggedIn && hasAccount && (isLoginRoute || isLoadingRoute)) {
           return '/decks';
         }
 
@@ -39,6 +50,17 @@ class AppRouter {
     refreshListenable: _AuthStateNotifier.instance,
     routes: [
       GoRoute(path: '/login', builder: (context, state) => const LoginScreen()),
+      GoRoute(
+        path: '/loading', 
+        builder: (context, state) => const _LoadingScreen()
+      ),
+      GoRoute(
+        path: '/decks/:deckId',
+        builder: (context, state) {
+          final deckId = state.pathParameters['deckId']!;
+          return DeckDetailView(deckId: deckId);
+        },
+      ),
       StatefulShellRoute.indexedStack(
         builder: (context, state, navigationShell) {
           return NavigationShell(navigationShell: navigationShell);
@@ -75,11 +97,41 @@ class _AuthStateNotifier extends ChangeNotifier {
 
     try {
       final userController = GetIt.instance<UserController>();
+      
+      // Listen to auth state changes
       userController.authStateChanges.listen((user) {
+        notifyListeners();
+      });
+      
+      // Also listen to account changes
+      userController.accountSink.listen((account) {
         notifyListeners();
       });
     } catch (e) {
       // Services not ready yet, will be initialized later
     }
+  }
+}
+
+class _LoadingScreen extends StatelessWidget {
+  const _LoadingScreen();
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            const CircularProgressIndicator(),
+            const SizedBox(height: 24),
+            Text(
+              'common.loading'.tr(),
+              style: Theme.of(context).textTheme.titleMedium,
+            ),
+          ],
+        ),
+      ),
+    );
   }
 }

@@ -12,6 +12,7 @@ class SearchFilters {
   final List<String>? keywords;
   final String? manaCost;
   final RangeFilter? manaValue;
+  final List<String>? convertedManaCosts; // '1-', '2', '3', '4', '5', '6+'
   final RangeFilter? power;
   final RangeFilter? toughness;
   final RangeFilter? loyalty;
@@ -41,6 +42,7 @@ class SearchFilters {
     this.keywords,
     this.manaCost,
     this.manaValue,
+    this.convertedManaCosts,
     this.power,
     this.toughness,
     this.loyalty,
@@ -71,6 +73,7 @@ class SearchFilters {
     Object? keywords = _sentinel,
     String? manaCost,
     Object? manaValue = _sentinel,
+    Object? convertedManaCosts = _sentinel,
     Object? power = _sentinel,
     Object? toughness = _sentinel,
     Object? loyalty = _sentinel,
@@ -100,6 +103,7 @@ class SearchFilters {
       keywords: keywords == _sentinel ? this.keywords : keywords as List<String>?,
       manaCost: manaCost ?? this.manaCost,
       manaValue: manaValue == _sentinel ? this.manaValue : manaValue as RangeFilter?,
+      convertedManaCosts: convertedManaCosts == _sentinel ? this.convertedManaCosts : convertedManaCosts as List<String>?,
       power: power == _sentinel ? this.power : power as RangeFilter?,
       toughness: toughness == _sentinel ? this.toughness : toughness as RangeFilter?,
       loyalty: loyalty == _sentinel ? this.loyalty : loyalty as RangeFilter?,
@@ -133,6 +137,7 @@ class SearchFilters {
         keywords?.isNotEmpty == true ||
         manaCost?.isNotEmpty == true ||
         manaValue != null ||
+        convertedManaCosts?.isNotEmpty == true ||
         power != null ||
         toughness != null ||
         loyalty != null ||
@@ -161,6 +166,7 @@ class SearchFilters {
       'keywords': keywords,
       'manaCost': manaCost,
       'manaValue': manaValue?.toJson(),
+      'convertedManaCosts': convertedManaCosts,
       'power': power?.toJson(),
       'toughness': toughness?.toJson(),
       'loyalty': loyalty?.toJson(),
@@ -193,6 +199,7 @@ class SearchFilters {
       keywords: json['keywords']?.cast<String>(),
       manaCost: json['manaCost'],
       manaValue: json['manaValue'] != null ? RangeFilter.fromJson(json['manaValue']) : null,
+      convertedManaCosts: json['convertedManaCosts']?.cast<String>(),
       power: json['power'] != null ? RangeFilter.fromJson(json['power']) : null,
       toughness: json['toughness'] != null ? RangeFilter.fromJson(json['toughness']) : null,
       loyalty: json['loyalty'] != null ? RangeFilter.fromJson(json['loyalty']) : null,

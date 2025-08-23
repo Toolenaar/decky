@@ -35,6 +35,7 @@ class CollectionView extends StatelessWidget {
         onPressed: () {
           // TODO: Open camera to scan cards
         },
+        heroTag: "collection_fab",
         icon: const Icon(Icons.camera_alt),
         label: Text('collection.scan_cards'.tr()),
       ),

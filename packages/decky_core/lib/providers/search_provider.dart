@@ -144,6 +144,20 @@ class SearchProvider extends ChangeNotifier {
     updateFilters(_filters.copyWith(rarities: rarities.isEmpty ? null : rarities));
   }
 
+  void addConvertedManaCostFilter(String manaCost) {
+    final manaCosts = List<String>.from(_filters.convertedManaCosts ?? []);
+    if (!manaCosts.contains(manaCost)) {
+      manaCosts.add(manaCost);
+      updateFilters(_filters.copyWith(convertedManaCosts: manaCosts));
+    }
+  }
+
+  void removeConvertedManaCostFilter(String manaCost) {
+    final manaCosts = List<String>.from(_filters.convertedManaCosts ?? []);
+    manaCosts.remove(manaCost);
+    updateFilters(_filters.copyWith(convertedManaCosts: manaCosts.isEmpty ? null : manaCosts));
+  }
+
   void setManaValueRange(double? min, double? max) {
     final range = (min == null && max == null) ? null : RangeFilter(min: min, max: max);
     updateFilters(_filters.copyWith(manaValue: range));
@@ -284,6 +298,7 @@ class SearchProvider extends ChangeNotifier {
   List<String> get selectedColors => _filters.colors ?? [];
   List<String> get selectedTypes => _filters.types ?? [];
   List<String> get selectedRarities => _filters.rarities ?? [];
+  List<String> get selectedConvertedManaCosts => _filters.convertedManaCosts ?? [];
   Map<String, String> get selectedFormats => _filters.formatLegalities ?? {};
   RangeFilter? get manaValueRange => _filters.manaValue;
   RangeFilter? get priceRange => _filters.price;
@@ -294,6 +309,7 @@ class SearchProvider extends ChangeNotifier {
     if (_filters.colors?.isNotEmpty == true) count++;
     if (_filters.types?.isNotEmpty == true) count++;
     if (_filters.rarities?.isNotEmpty == true) count++;
+    if (_filters.convertedManaCosts?.isNotEmpty == true) count++;
     if (_filters.formatLegalities?.isNotEmpty == true) count++;
     if (_filters.manaValue != null) count++;
     if (_filters.price != null) count++;
@@ -343,7 +359,7 @@ class SearchProvider extends ChangeNotifier {
       final cardDoc = await FirebaseFirestore.instance.collection('cards').doc(cardId).get();
       if (!cardDoc.exists) return;
 
-      final card = MtgCard.fromJson({...cardDoc.data()!, 'uuid': cardDoc.id});
+      final card = MtgCard.fromJson({...cardDoc.data()!, 'uuid': cardDoc.id}, cardDoc.id);
 
       if (await _taskController.shouldUpdateCard(card)) {
         final reason = await _taskController.determineUpdateReason(card);

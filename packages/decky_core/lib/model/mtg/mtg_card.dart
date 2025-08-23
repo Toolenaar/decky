@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/foundation.dart';
 import '../base_model.dart';
 import 'identifiers.dart';
 import 'legalities.dart';
@@ -193,12 +194,36 @@ class MtgCard extends BaseModel {
   });
 
   @override
-  DocumentReference<Map<String, dynamic>> get ref => 
-      FirebaseFirestore.instance.collection('cards').doc(id);
+  DocumentReference<Map<String, dynamic>> get ref => FirebaseFirestore.instance.collection('cards').doc(id);
+
+  /// Fetches a complete MtgCard from Firestore by its ID
+  static Future<MtgCard?> fetchById(String cardId) async {
+    try {
+      final cardDoc = await FirebaseFirestore.instance
+          .collection('cards')
+          .doc(cardId)
+          .get();
+      
+      if (!cardDoc.exists) {
+        return null;
+      }
+
+      return MtgCard.fromJson({
+        ...cardDoc.data()!,
+        'uuid': cardDoc.id,
+      }, cardDoc.id);
+    } catch (e) {
+      // Log error but don't throw to allow graceful handling
+      debugPrint('Error fetching MTG card $cardId: $e');
+      return null;
+    }
+  }
 
   @override
   Map<String, dynamic> toJson() {
     return {
+      'uuid': id, // Include the UUID/ID field
+      'id': id, // Include the UUID/ID field
       if (artist != null) 'artist': artist,
       if (artistIds != null) 'artistIds': artistIds,
       if (asciiName != null) 'asciiName': asciiName,
@@ -290,9 +315,9 @@ class MtgCard extends BaseModel {
     };
   }
 
-  factory MtgCard.fromJson(Map<String, dynamic> json) {
+  factory MtgCard.fromJson(Map<String, dynamic> json, String id) {
     return MtgCard(
-      id: json['uuid'], // Use UUID as ID for cards
+      id: id,
       artist: json['artist'],
       artistIds: json['artistIds'] != null ? List<String>.from(json['artistIds']) : null,
       asciiName: json['asciiName'],
@@ -316,7 +341,7 @@ class MtgCard extends BaseModel {
       finishes: List<String>.from(json['finishes'] ?? []),
       flavorName: json['flavorName'],
       flavorText: json['flavorText'],
-      foreignData: json['foreignData'] != null 
+      foreignData: json['foreignData'] != null
           ? (json['foreignData'] as List).map((e) => ForeignData.fromJson(e)).toList()
           : null,
       frameEffects: json['frameEffects'] != null ? List<String>.from(json['frameEffects']) : null,
@@ -344,9 +369,7 @@ class MtgCard extends BaseModel {
       keywords: json['keywords'] != null ? List<String>.from(json['keywords']) : null,
       language: json['language'],
       layout: json['layout'],
-      leadershipSkills: json['leadershipSkills'] != null 
-          ? LeadershipSkills.fromJson(json['leadershipSkills'])
-          : null,
+      leadershipSkills: json['leadershipSkills'] != null ? LeadershipSkills.fromJson(json['leadershipSkills']) : null,
       legalities: Legalities.fromJson(json['legalities']),
       life: json['life'],
       loyalty: json['loyalty'],
@@ -364,20 +387,14 @@ class MtgCard extends BaseModel {
       promoTypes: json['promoTypes'] != null ? List<String>.from(json['promoTypes']) : null,
       purchaseUrls: PurchaseUrls.fromJson(json['purchaseUrls'] ?? {}),
       rarity: json['rarity'],
-      relatedCards: json['relatedCards'] != null 
-          ? RelatedCards.fromJson(json['relatedCards'])
-          : null,
+      relatedCards: json['relatedCards'] != null ? RelatedCards.fromJson(json['relatedCards']) : null,
       rebalancedPrintings: json['rebalancedPrintings'] != null ? List<String>.from(json['rebalancedPrintings']) : null,
-      rulings: json['rulings'] != null 
-          ? (json['rulings'] as List).map((e) => Rulings.fromJson(e)).toList()
-          : null,
+      rulings: json['rulings'] != null ? (json['rulings'] as List).map((e) => Rulings.fromJson(e)).toList() : null,
       securityStamp: json['securityStamp'],
       setCode: json['setCode'],
       side: json['side'],
       signature: json['signature'],
-      sourceProducts: json['sourceProducts'] != null 
-          ? SourceProducts.fromJson(json['sourceProducts'])
-          : null,
+      sourceProducts: json['sourceProducts'] != null ? SourceProducts.fromJson(json['sourceProducts']) : null,
       subsets: json['subsets'] != null ? List<String>.from(json['subsets']) : null,
       subtypes: List<String>.from(json['subtypes'] ?? []),
       supertypes: List<String>.from(json['supertypes'] ?? []),
@@ -387,13 +404,11 @@ class MtgCard extends BaseModel {
       types: List<String>.from(json['types'] ?? []),
       variations: json['variations'] != null ? List<String>.from(json['variations']) : null,
       watermark: json['watermark'],
-      firebaseImageUris: json['firebaseImageUris'] != null 
+      firebaseImageUris: json['firebaseImageUris'] != null
           ? FirebaseImageUris.fromJson(Map<String, dynamic>.from(json['firebaseImageUris'] as Map))
           : null,
       imageDataStatus: json['imageDataStatus'],
-      scryfallData: json['scryfallData'] != null 
-          ? Map<String, dynamic>.from(json['scryfallData'] as Map)
-          : null,
+      scryfallData: json['scryfallData'] != null ? Map<String, dynamic>.from(json['scryfallData'] as Map) : null,
       importError: json['importError'],
     );
   }
